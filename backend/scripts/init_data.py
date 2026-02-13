@@ -14,11 +14,11 @@ with app.app_context():
   company_r = datastore.find_or_create_role(name = "company", description = "provides job oppurnities and hires students")
 
   if not datastore.find_user(email = "admin@example.com"):
-    datastore.create_user(email = "admin@example.com", name = "admin", password = hash_password("password"), roles=['admin'])
+    datastore.create_user(email = "admin@example.com",  password = hash_password("password"), roles=['admin'])
   if not datastore.find_user(email = "testcompany@example.com"):
-    datastore.create_user(email = "testcompany@example.com", name = "test_company", password = hash_password("password"), roles=['company'])
+    datastore.create_user(email = "testcompany@example.com", password = hash_password("password"), roles=['company'])
   if not datastore.find_user(email = "rahul@example.com"):
-    datastore.create_user(email = "rahul@example.com", name = "test_student", password = hash_password("password"), roles=['student'])
+    datastore.create_user(email = "rahul@example.com", password = hash_password("password"), roles=['student'])
   try:
     db.session.commit()
   except:
