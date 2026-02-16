@@ -5,6 +5,7 @@ from api.auth import auth
 from api.student import student, stud_api, stud_api_bp
 from api.company import company, comp_api_bp
 from api.admin import admin_api_bp
+from flask_cors import CORS
 
 
 def create_app():
@@ -14,6 +15,7 @@ def create_app():
   app.config.from_object(LocalDevelopmentConfig)
   from models import db, User, Role
   db.init_app(app)
+  CORS(app)
 
   from flask_security.datastore import SQLAlchemyUserDatastore
   from extensions import security

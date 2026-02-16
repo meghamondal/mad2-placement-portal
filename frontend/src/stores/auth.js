@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import api from "@/utils/api"
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     authToken: localStorage.getItem("token") || null,
@@ -33,8 +34,9 @@ export const useAuthStore = defineStore("auth", {
     },
 
     async login(credentials) {
-      const response = await api.post("/auth/login", credentials);
-      const { id, email, role, token } = response.data;
+      const response = await api.post("/api/auth/login", credentials);
+      console.log("Login response:",response);
+      const { id, email, role, token } = response;
       if (!token) {
         throw new Error("Token is not recieved");
       }
