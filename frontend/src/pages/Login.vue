@@ -18,6 +18,11 @@ export default {
         this.errorMsg = "Please enter your email address...";
         return;
       }
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!pattern.test(this.email)){
+        this.errorMsg = "Enter valid email address...";
+        return;
+      }
       if (!this.password){
         this.errorMsg = "Please enter password...";
         return;
@@ -38,7 +43,7 @@ export default {
         }
       }
       catch (error) {
-        this.errorMsg = "Invalid email or password...";
+        this.errorMsg = error.message;
       }
     }
   }
@@ -46,8 +51,9 @@ export default {
 </script>
 
 <template>
-  <div class="container main-container">
-    <div class="mb-3 center"><h3>Login</h3></div>
+  <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card shadow p-4" style="width: 380px;">
+      <h4 class="text-center mb-4">Login</h4>
     <form @submit.prevent="userLogin">
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Email: </label>
@@ -57,7 +63,7 @@ export default {
         <label for="inputPassword" class="form-label">Password: </label>
         <input type="password" class="form-control" placeholder="Your password" v-model="password">
       </div>
-      <div class="mb-3 center">
+      <div class="d-grid">
         <button type="submit" class="btn btn-primary">Login</button>
       </div>
       <div class="text-center mt-3">
@@ -66,6 +72,10 @@ export default {
       </div>
       <div v-if="errorMsg" class="text-danger small mt-2">{{ errorMsg  }}</div>
     </form>
+    </div>
   </div>
 
 </template>
+
+<style>
+</style>

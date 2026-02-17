@@ -15,7 +15,7 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     setAuth(token, user) {
-      this.token = token = token;
+      this.token = token;
       this.user = user = user;
 
       if ( token) {
@@ -26,7 +26,7 @@ export const useAuthStore = defineStore("auth", {
       }
 
       if (user) {
-        localStorage.stItem("user", JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
       }
       else {
         localStorage.removeItem("user");
@@ -35,7 +35,7 @@ export const useAuthStore = defineStore("auth", {
 
     async login(credentials) {
       const response = await api.post("/api/auth/login", credentials);
-      console.log("Login response:",response);
+      // console.log("Login response:",response);
       const { id, email, role, token } = response;
       if (!token) {
         throw new Error("Token is not recieved");

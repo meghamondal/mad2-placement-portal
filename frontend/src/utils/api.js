@@ -20,6 +20,12 @@ async function httpRequest(endpoint, method ="GET", data=null) {
 
   if (!response.ok){
     console.error("Status code: ", response.status);
+    if (response.status === 401) {
+      throw new Error("Invalid credentials...");
+    }
+    if (response.status === 500) {
+      throw new Error("Internal server error...");
+    }
     throw new Error("Not able to complete the request");
   }
   return response.status === 204 ? null : response.json();
