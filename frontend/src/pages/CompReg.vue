@@ -1,4 +1,5 @@
 <script>
+import api from '@/utils/api';
 export default {
   data() {
     return {
@@ -11,7 +12,51 @@ export default {
     };
   },
   methods: {
-    
+    async compReg() {
+      this.errorMsg = "";
+
+      if (!this.email){
+        this.errorMsg = "Please enter your email address...";
+        return;
+      }
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!pattern.test(this.email)){
+        this.errorMsg = "Enter valid email address...";
+        return;
+      }
+      if (!this.password){
+        this.errorMsg = "Please enter password...";
+        return;
+      }
+      if (!this.c_name){
+        this.errorMsg = "Please enter your company name...";
+        return;
+      }
+      if (!this.hr_contact){
+        this.errorMsg = "Please enter hr contact...";
+        return;
+      }
+      if (!this.website){
+        this.errorMsg = "Please enter you website link...";
+        return;
+      }
+      try{
+        const payload = {
+          email: this.email,
+          password: this.password,
+          role: "company",
+          c_name: this.c_name,
+          hr_contact: this.hr_contact,
+          website: this.website
+        };
+        const response = await api.post("/api/company/register", payload);
+        alert("Registration successful...");
+        this.$router.push("/login");
+      }
+      catch (error) {
+        this.errorMsg = error.message || "Registration failed...";
+      }
+    }
   }
 }
 </script>

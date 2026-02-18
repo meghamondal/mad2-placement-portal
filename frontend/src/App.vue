@@ -15,8 +15,15 @@ export default {
 
 <template>
   <Navbar />
+  <div class="router-view-container">
   <router-view />
+  </div>
   <Footer />
 </template>
 
-<style scoped></style>
+<style scoped>
+.router-view-container{
+  min-height: 89vh;
+
+}
+</style>

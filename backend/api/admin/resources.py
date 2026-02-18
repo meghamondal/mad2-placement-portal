@@ -98,6 +98,13 @@ class AdminCompListResource(Resource):
   def get(self):
     return AdminService.get_comp_list()
   
+class AdminCompPendingListResource(Resource):
+  @auth_required("token")
+  @roles_required("admin")
+  @marshal_with(company_fields)
+  def get(self):
+    return AdminService.get_comp_list_p()
+  
 class AdminCompEditResource(Resource):
   @auth_required("token")
   @roles_required("admin")

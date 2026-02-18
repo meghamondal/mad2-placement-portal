@@ -15,7 +15,7 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     setAuth(token, user) {
-      this.token = token;
+      this.authToken = token;
       this.user = user = user;
 
       if ( token) {

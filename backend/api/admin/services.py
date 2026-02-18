@@ -58,6 +58,11 @@ class AdminService():
     comp = Company.query.all()
     return comp
   
+  staticmethod
+  def get_comp_list_p():
+    comp_p = Company.query.filter_by(approval_status="pending").all()
+    return comp_p
+  
   @staticmethod
   def edit_company_status(c_id, approval_status): 
     comp = Company.query.filter_by(c_id = c_id).first()
