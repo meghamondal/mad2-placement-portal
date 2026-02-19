@@ -53,12 +53,12 @@ class AdminService():
       raise ServiceError("Company details does not exists...", 404)
     return comp
   
-  staticmethod
+  @staticmethod
   def get_comp_list():
     comp = Company.query.all()
     return comp
   
-  staticmethod
+  @staticmethod
   def get_comp_list_p():
     comp_p = Company.query.filter_by(approval_status="pending").all()
     return comp_p
@@ -93,6 +93,10 @@ class AdminService():
     total_pd = Placement_drive.query.count()
     return total_pd
       
+  @staticmethod
+  def get_pd_list():
+    pd = Placement_drive.query.all()
+    return pd
   
   @staticmethod
   def pd_details(pd_id):

@@ -35,6 +35,11 @@ class CompanyService():
     comp = Company.query.get(c_id)
     if comp is None:
       raise ServiceError("Company does not exists...", 404)
+    if comp.approval_status != "approved":
+      raise ServiceError("Company is not approved by the admin...", 403)
+    if comp.approval_status == "rejected":
+      raise ServiceError("Company is  rejected by the admin...", 403)
+    
     pd = Placement_drive(
       c_id = c_id,
       job_title=data.get("job_title"),

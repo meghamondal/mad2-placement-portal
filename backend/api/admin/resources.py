@@ -30,14 +30,17 @@ pd_fields = {
   "min_cgpa": fields.Float,
   "eligible_year": fields.Integer,
   "application_deadline": fields.DateTime,
-  "pd_status": fields.String
+  "pd_status": fields.String,
+  'company_details': fields.Nested(company_fields, attribute='company')
 }
 
 app_fields = {
   "app_id": fields.Integer,
   "stud_id": fields.Integer,
   "pd_id": fields.Integer,
-  "app_status": fields.String
+  "app_status": fields.String,
+  "student_details": fields.Nested(student_fields, attribute='student'),
+  "pd_details": fields.Nested(pd_fields, attribute='placement_d')
 }
 
 compstatus_parser = reqparse.RequestParser()
@@ -122,6 +125,13 @@ class AdminpdResource(Resource):
   def get(self, pd_id):
     pd_details = AdminService.pd_details(pd_id)
     return pd_details
+  
+class AdminPdListResource(Resource):
+  @auth_required("token")
+  @roles_required("admin")
+  @marshal_with(pd_fields)
+  def get(self):
+    return AdminService.get_pd_list()
   
 class AdminpdEditResource(Resource):
   @auth_required("token")

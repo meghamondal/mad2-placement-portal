@@ -1,13 +1,309 @@
 <script>
+import api from '@/utils/api';
 export default {
-  name: "AdminDashboard"
+  name: "AdminDashboard",
+  
+  data() {
+    return {
+      students: [],
+      selectedStud: null,
+      companies: [],
+      selectedComp: null,
+      p_drives: [],
+      selectedPd: null,
+      applications: [],
+      errorMsg: ""
+    };
+  },
+  created() {
+    this.loadStudents();
+    this.loadCompanies();
+    this.loadPd();
+    this.loadApp();
+  },
+  methods: {
+    async loadStudents() {
+      this.errorMsg = "";
+      try{
+        const data = await api.get("/admin_api/stud_list");
+        this.students = data;
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the students...";
+      }
+    },
+    async viewStud(stud_id) {
+      this.errorMsg = "";
+      try{
+        const data = await api.get(`/admin_api/stud_details/${stud_id}`);
+        if (Array.isArray(data)){this.selectedStud = data[0];}
+        else{this.selectedStud = data;}
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the details...";
+      }
+    },
+    async deleteStud(stud_id) {
+      const isConfirmed = confirm("Are you sure you want to delete this student?");
+      if (!isConfirmed) return;
+      this.errorMsg = "";
+      try{
+        await api.delete(`/admin_api/stud_details/${stud_id}`);
+        this.students = this.students.filter(s => s.stud_id !== stud_id);
+        if (this.selectedStud?.stud_id === stud_id) {
+          this.selectedStud = null;
+        }
+        alert("Student deleted  successfully...")
+      }
+      catch (error) {
+        this.errorMsg = error.message || "Error in deleting the record...";
+      }
+    },
+    async loadCompanies() {
+      this.errorMsg = "";
+      try{
+        const data = await api.get("/admin_api/comp_list");
+        this.companies = data;
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the companies...";
+      }
+    },
+    async viewComp(c_id) {
+      this.errorMsg = "";
+      try{
+        const data = await api.get(`/admin_api/comp_details/${c_id}`);
+        if (Array.isArray(data)){this.selectedComp = data[0];}
+        else{this.selectedComp = data;}
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the details...";
+      }
+    },
+    async deleteComp(c_id) {
+      const isConfirmed = confirm("Are you sure you want to delete this company?");
+      if (!isConfirmed) return;
+      this.errorMsg = "";
+      try{
+        await api.delete(`/admin_api/comp_details/${c_id}`);
+        this.companies = this.companies.filter(c => c.c_id !== c_id);
+        if (this.selectedComp?.c_id === c_id) {
+          this.selectedComp = null;
+        }
+        alert("Company deleted  successfully...")
+      }
+      catch (error) {
+        this.errorMsg = error.message || "Error in deleting the record...";
+      }
+    },
+    async loadPd() {
+      this.errorMsg = "";
+      try{
+        const data = await api.get("/admin_api/pd_list");
+        this.p_drives = data;
+        console.log(data);
+        
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the placement derives...";
+      }
+    },
+    async viewPd(pd_id) {
+      this.errorMsg = "";
+      try{
+        const data = await api.get(`/admin_api/pd_details/${pd_id}`);
+        if (Array.isArray(data)){this.selectedPd = data[0];}
+        else{this.selectedPd = data;}
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the details...";
+      }
+    },
+    async loadApp() {
+      this.errorMsg = "";
+      try{
+        const data = await api.get("/admin_api/app_list");
+        this.applications = data;
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the applications...";
+      }
+    },
+    cancel() {
+      this.selectedStud = null;
+      this.selectedComp = null;
+      this.selectedPd = null;
+      this.errorMsg = "";
+      console.log("Details closed...")
+    }
+  }
 };
 </script>
 
 <template>
   <div class="container mt-4">
-    <div v-for="(student, index) in students" :key="student.stud_id" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
-      
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <div class="card-header bg-light text-black">
+        <h4 class="mb-0">Students who have registered...</h4>
+        <div class="card-body">
+          <table class="table table-hover table-striped align-middle">
+            <thead class="table-ligh">
+              <tr>
+                <th>S. No</th>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(student, id) in students" :key="student.stud_id">
+                <td>{{  id+1  }}</td>
+                <td>{{ student.stud_id  }}</td>
+                <td>{{ student.f_name }} {{ student.l_name  }}</td>
+                <td class="text-center">
+                  <button class="btn btn-primary" @click="viewStud(student.stud_id)">View</button>
+                  <button class="btn btn-danger" @click="deleteStud(student.stud_id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div v-if="selectedStud" class="card mt-4 shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">Student Details</div>
+        <div class="card-body">
+          <p><strong>ID: </strong>{{ selectedStud.stud_id }}</p>
+          <p><strong>Name: </strong>{{ selectedStud.f_name }} {{ selectedStud.l_name }}</p>
+          <p><strong>Date of Birth: </strong>{{ selectedStud.dob }}</p>
+          <p><strong>Graduation Year: </strong>{{ selectedStud.graduation_year }}</p>
+          <p><strong>CGPA: </strong>{{ selectedStud.cgpa }}</p>
+          <a :href="`http://127.0.0.1:5000/${selectedStud.resume_file}`" target="_blank">View Resume</a>
+          <button @click="cancel" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div> 
+<!-- company -->
+  <div class="container mt-4">
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <div class="card-header bg-light text-black">
+        <h4 class="mb-0">Companies who have registered...</h4>
+        <div class="card-body">
+          <table class="table table-hover table-striped align-middle">
+            <thead class="table-ligh">
+              <tr>
+                <th>S. No</th>
+              <th>Company ID</th>
+              <th>Name</th>
+              <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(company, id) in companies" :key="company.c_id">
+                <td>{{  id+1  }}</td>
+                <td>{{company.c_id  }}</td>
+                <td>{{ company.c_name }}</td>
+                <td class="text-center">
+                  <button class="btn btn-primary" @click="viewComp(company.c_id)">View</button>
+                  <button class="btn btn-danger" @click="deleteComp(company.c_id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div v-if="selectedComp" class="card mt-4 shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">Company Details</div>
+        <div class="card-body">
+          <p><strong>ID: </strong>{{ selectedComp.c_id }}</p>
+          <p><strong>Name: </strong>{{ selectedComp.c_name }}</p>
+          <p><strong>HR Contact: </strong>{{ selectedComp.hr_contact}}</p>
+          <p><strong>Website: </strong>{{ selectedComp.website }}</p>
+          <p><strong>Approval Status: </strong>{{ selectedComp.approval_status }}</p>
+          <button @click="cancel" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div> 
+<!-- placement drive -->
+  <div class="container mt-4">
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <div class="card-header bg-light text-black">
+        <h4 class="mb-0">Created Placement drives...</h4>
+        <div class="card-body">
+          <table class="table table-hover table-striped align-middle">
+            <thead class="table-ligh">
+              <tr>
+                <th>S. No</th>
+              <th>Pd ID</th>
+              <th>Company ID</th>
+              <th>Company Name</th>
+              <th>Job Title</th>
+              <th class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(pd, id) in p_drives" :key="pd.pd_id">
+                <td>{{  id+1  }}</td>
+                <td>{{ pd.pd_id  }}</td>
+                <td>{{ pd.c_id  }}</td>
+                <td>{{ pd.company_details.c_name  }}</td>
+                <td>{{ pd.job_title }}</td>
+                <td class="text-center">
+                  <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div v-if="selectedPd" class="card mt-4 shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">Placement Drive Details</div>
+        <div class="card-body">
+          <p><strong>Pd ID: </strong>{{ selectedPd.pd_id }}</p>
+          <p><strong>Company ID: </strong>{{ selectedPd.c_id}}</p>
+          <p><strong>Company Name: </strong>{{ selectedPd.job_title }}</p>
+          <p><strong>Job Description: </strong>{{ selectedPd.job_description }}</p>
+          <p><strong>Eligible Branch: </strong>{{ selectedPd.eligible_branch }}</p>
+          <p><strong>Min Cgpa: </strong>{{ selectedPd.min_cgpa }}</p>
+          <p><strong>Eligible Year: </strong>{{ selectedPd.eligible_year }}</p>
+          <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p>
+          <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p>
+          <button @click="cancel" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div> 
+<!-- applications -->
+  <div class="container mt-4">
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <div class="card-header bg-light text-black">
+        <h4 class="mb-0">Applied Applications...</h4>
+        <div class="card-body">
+          <table class="table table-hover table-striped align-middle">
+            <thead class="table-ligh">
+              <tr>
+                <th>S. No</th>
+              <th>Application ID</th>
+              <th>Pd ID</th>
+              <th>Job Title</th>
+              <th>Student Name</th>
+              <th>Application Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(app, id) in applications" :key="app.app_id">
+                <td>{{  id+1  }}</td>
+                <td>{{ app.app_id  }}</td>
+                <td>{{ app.pd_id  }}</td>
+                <td>{{ app.pd_details.job_title  }}</td>
+                <td>{{ app.student_details.f_name }} {{ app.student_details.l_name }}</td>
+                <td>{{ app.app_status }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div> 
 </template>
