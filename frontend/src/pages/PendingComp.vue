@@ -98,6 +98,7 @@ export default {
           <p><strong>Name: </strong>{{ selectedComp.c_name }}</p>
           <p><strong>HR Contact: </strong>{{ selectedComp.hr_contact}}</p>
           <p><strong>Website: </strong>{{ selectedComp.website }}</p>
+          <p><strong>Industry: </strong>{{ selectedComp.industry }}</p>
           <p><strong>Approval Status: </strong>{{ selectedComp.approval_status }}</p>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>

@@ -10,7 +10,8 @@ student_fields = {
   "resume_file": fields.String,
   "dob": fields.DateTime,
   "graduation_year": fields.Integer,
-  "cgpa": fields.Float
+  "cgpa": fields.Float,
+  "active": fields.Boolean
 }
 
 company_fields = {
@@ -18,7 +19,9 @@ company_fields = {
    "c_name": fields.String,
    "hr_contact": fields.String,
    "website": fields.String,
-   "approval_status": fields.String
+   "industry": fields.String,
+   "approval_status": fields.String,
+   "active": fields.Boolean
 }
 
 pd_fields = {

@@ -13,7 +13,7 @@ student_fields = {
   "resume_file": fields.String,
   "dob": fields.DateTime,
   "graduation_year": fields.Integer,
-  "cgpa": fields.Float
+  "cgpa": fields.Float,
 }
 
 pdrive_fields = {

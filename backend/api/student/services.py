@@ -1,4 +1,4 @@
-from models import Student, Placement_drive, Application, db
+from models import Student, Placement_drive, Application, db, User
 from flask_security import current_user
 from datetime import datetime
 

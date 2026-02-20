@@ -8,6 +8,7 @@ export default {
       c_name: "",
       hr_contact: "",
       website: "",
+      industry: "",
       errorMsg: ""
     };
   },
@@ -40,6 +41,10 @@ export default {
         this.errorMsg = "Please enter you website link...";
         return;
       }
+      if (!this.industry){
+        this.errorMsg = "Please enter industry...";
+        return;
+      }
       try{
         const payload = {
           email: this.email,
@@ -47,7 +52,8 @@ export default {
           role: "company",
           c_name: this.c_name,
           hr_contact: this.hr_contact,
-          website: this.website
+          website: this.website,
+          industry: this.industry
         };
         const response = await api.post("/api/company/register", payload);
         alert("Registration successful...");
@@ -85,6 +91,10 @@ export default {
       <div class="mb-3">
         <label for="website" class="form-label">Website: </label>
         <input type="website" class="form-control"  placeholder="website" v-model="website">
+      </div>
+      <div class="mb-3">
+        <label for="industry" class="form-label">Industry: </label>
+        <input type="industry" class="form-control"  placeholder="industry" v-model="industry">
       </div>
       
       <div class="d-grid">

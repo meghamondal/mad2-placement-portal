@@ -35,7 +35,7 @@ with app.app_context():
 
   if User.query.filter_by(email= "testcompany@example.com").first():
     comp_data = User.query.filter_by(email= "testcompany@example.com").first()
-    new_comp=Company(c_id=comp_data.u_id, c_name = "testcompany", hr_contact="hr@testcompany.com", website="www.testcompany.com", approval_status = 'approved')
+    new_comp=Company(c_id=comp_data.u_id, c_name = "testcompany", hr_contact="hr@testcompany.com", website="www.testcompany.com", industry="Technology & IT", approval_status = 'approved')
     db.session.add(new_comp)
     db.session.commit()
 

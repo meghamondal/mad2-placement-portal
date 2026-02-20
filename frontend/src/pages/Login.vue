@@ -43,7 +43,7 @@ export default {
         }
       }
       catch (error) {
-        this.errorMsg = error.message;
+        this.errorMsg = error.message || "Admin have deactivated this account...";
       }
     }
   }

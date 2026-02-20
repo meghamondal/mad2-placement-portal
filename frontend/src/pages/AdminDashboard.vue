@@ -15,8 +15,60 @@ export default {
       p_drives: [],
       selectedPd: null,
       applications: [],
+      compSearch:"",
+      studSearch:"",
+      pdSearch:"",
+      appSearch:"",
       errorMsg: ""
     };
+  },
+  computed: {
+    filteredCompanies() {
+      const text = this.compSearch.toLowerCase()
+      if (!text) { return this.companies }
+      return this.companies.filter(company => {
+        const searchId = String(company.c_id).includes(text)
+        const searchName = company.c_name.toLowerCase().includes(text)
+        const searchIndustry = company.industry.toLowerCase().includes(text)
+        const searchCompstatus = company.approval_status.toLowerCase().includes(text)
+        return searchId || searchName || searchIndustry || searchCompstatus
+      })
+    },
+    filteredStudents() {
+      const text = this.studSearch.toLowerCase()
+      if (!text) { return this.students }
+      return this.students.filter(student => {
+        const searchId = String(student.stud_id).includes(text)
+        const searchFName = student.f_name.toLowerCase().includes(text)
+        const searchLName = student.l_name.toLowerCase().includes(text)
+        const searchCgpa = String(student.cgpa).includes(text)
+        return searchId || searchFName || searchLName || searchCgpa
+      })
+    },
+    filteredP_drives() {
+      const text = this.pdSearch.toLowerCase()
+      if (!text) { return this.p_drives }
+      return this.p_drives.filter(pd => {
+        const searchId = String(pd.pd_id).includes(text)
+        const searchCName = pd.company_details.c_name.toLowerCase().includes(text)
+        const searchJobtitle = pd.job_title.toLowerCase().includes(text)
+        const searchPdstatus = pd.pd_status.toLowerCase().includes(text)
+        const searchBranch = pd.eligible_branch.toLowerCase().includes(text)
+        return searchId || searchCName || searchJobtitle || searchBranch || searchPdstatus
+      })
+    },
+    filteredApplications() {
+      const text = this.appSearch.toLowerCase()
+      if (!text) { return this.applications }
+      return this.applications.filter(app => {
+        const searchId = String(app.app_id).includes(text)
+        const searchJobtitle = app.pd_details.job_title.toLowerCase().includes(text)
+        const searchFname = app.student_details.f_name.toLowerCase().includes(text)
+        const searchLname = app.student_details.l_name.toLowerCase().includes(text)
+        const searchappStatus = app.app_status.toLowerCase().includes(text)
+        return searchId || searchJobtitle || searchFname || searchLname || searchappStatus
+      })
+    }
   },
   created() {
     this.loadCounts();
@@ -52,7 +104,8 @@ export default {
       this.errorMsg = "";
       try{
         const data = await api.get(`/admin_api/stud_details/${stud_id}`);
-        if (Array.isArray(data)){this.selectedStud = data[0];}
+        if (Array.isArray(data)){this.selectedStud = data[0]; console.log(this.selectedStud.active);
+        }
         else{this.selectedStud = data;}
       }
       catch (error) {
@@ -148,9 +201,8 @@ export default {
     async stud_a_edit(id) {
       try {
         await api.patch(`/admin_api/stud_edit/${id}`);
-        this.selectedStud.active = !this.selectedStud.active;
-        // this.loadStudents();
-        // this.viewStud(id);
+        this.loadStudents();
+        this.viewStud(id);
       }
       catch (error) {
         this.errorMsg = error.message || "Error in updation...";
@@ -159,13 +211,15 @@ export default {
     async comp_a_edit(id) {
       try {
         await api.patch(`/admin_api/comp_edit/${id}`);
-        this.selectedComp.active = !this.selectedComp.active;
-        // this.loadStudents();
-        // this.viewStud(id);
+        this.loadCompanies();
+        this.viewComp(id);
       }
       catch (error) {
         this.errorMsg = error.message || "Error in updation...";
       }
+    },
+    Search() {
+
     },
     cancel() {
       this.selectedStud = null;
@@ -201,7 +255,13 @@ export default {
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
-        <h4 class="mb-0">Students who have registered...</h4>
+        <div class=" d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Students who have registered...</h4>
+          <form class="d-flex me-3 input-group input-group-sm" style="max-width: 350px;">
+            <input class="form-control me-2" type="search" placeholder="Search" v-model="studSearch">
+            <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i>Search</button>
+          </form>
+        </div>
         <div class="card-body">
           <table class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
@@ -213,7 +273,7 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(student, id) in students" :key="student.stud_id">
+              <tr v-for="(student, id) in filteredStudents" :key="student.stud_id">
                 <td>{{  id+1  }}</td>
                 <td>{{ student.stud_id  }}</td>
                 <td>{{ student.f_name }} {{ student.l_name  }}</td>
@@ -235,7 +295,7 @@ export default {
           <p><strong>Graduation Year: </strong>{{ selectedStud.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ selectedStud.cgpa }}</p>
           <a :href="`http://127.0.0.1:5000/${selectedStud.resume_file}`" target="_blank">View Resume</a>
-          <button :class="selectedStud.active ? 'btn btn-success' : 'btn btn-danger'" @click="stud_a_edit(selectedStud.stud_id)">{{ selectedStud.active ? "Activate" : "Deactivate" }}</button>
+          <button :class="selectedStud.active ? 'btn btn-danger' : 'btn btn-success'" @click="stud_a_edit(selectedStud.stud_id)">{{ selectedStud.active ? "Deactivate" : "Activate" }}</button>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
@@ -245,7 +305,13 @@ export default {
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
-        <h4 class="mb-0">Companies who have registered...</h4>
+        <div class=" d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Companies who have registered...</h4>
+          <form class="d-flex me-3 input-group input-group-sm" style="max-width: 350px;">
+            <input class="form-control me-2" type="search" placeholder="Search" v-model="compSearch">
+            <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i>Search</button>
+          </form>
+        </div>
         <div class="card-body">
           <table class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
@@ -257,7 +323,7 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(company, id) in companies" :key="company.c_id">
+              <tr v-for="(company, id) in filteredCompanies" :key="company.c_id">
                 <td>{{  id+1  }}</td>
                 <td>{{company.c_id  }}</td>
                 <td>{{ company.c_name }}</td>
@@ -277,6 +343,7 @@ export default {
           <p><strong>Name: </strong>{{ selectedComp.c_name }}</p>
           <p><strong>HR Contact: </strong>{{ selectedComp.hr_contact}}</p>
           <p><strong>Website: </strong>{{ selectedComp.website }}</p>
+          <p><strong>Industry: </strong>{{ selectedComp.industry }}</p>
           <p><strong>Approval Status: </strong>{{ selectedComp.approval_status }}</p>
           <button :class="selectedComp.active ? 'btn btn-danger' : 'btn btn-success'" @click="comp_a_edit(selectedComp.c_id)">{{ selectedComp.active ? "Deactivate" : "Activate" }}</button>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
@@ -288,7 +355,13 @@ export default {
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
-        <h4 class="mb-0">Created Placement drives...</h4>
+        <div class=" d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Created Placement drives...</h4>
+          <form class="d-flex me-3 input-group input-group-sm" style="max-width: 350px;">
+            <input class="form-control me-2" type="search" placeholder="Search" v-model="pdSearch">
+            <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i>Search</button>
+          </form>
+        </div>
         <div class="card-body">
           <table class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
@@ -302,7 +375,7 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(pd, id) in p_drives" :key="pd.pd_id">
+              <tr v-for="(pd, id) in filteredP_drives" :key="pd.pd_id">
                 <td>{{  id+1  }}</td>
                 <td>{{ pd.pd_id  }}</td>
                 <td>{{ pd.c_id  }}</td>
@@ -337,7 +410,13 @@ export default {
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
-        <h4 class="mb-0">Applied Applications...</h4>
+        <div class=" d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Applied Applications...</h4>
+          <form class="d-flex me-3 input-group input-group-sm" style="max-width: 350px;">
+            <input class="form-control me-2" type="search" placeholder="Search" v-model="appSearch">
+            <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i>Search</button>
+          </form>
+        </div>
         <div class="card-body">
           <table class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
@@ -351,7 +430,7 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(app, id) in applications" :key="app.app_id">
+              <tr v-for="(app, id) in filteredApplications" :key="app.app_id">
                 <td>{{  id+1  }}</td>
                 <td>{{ app.app_id  }}</td>
                 <td>{{ app.pd_id  }}</td>

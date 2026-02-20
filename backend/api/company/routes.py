@@ -15,6 +15,7 @@ def comp_register():
   c_name = data.get("c_name")
   hr_contact = data.get("hr_contact")
   website = data.get("website")
+  industry = data.get("industry")
   approval_status = "pending"
   print("Data accepted")
   
@@ -39,7 +40,7 @@ def comp_register():
   role = datastore.find_role("company")
   datastore.add_role_to_user(user, role)
 
-  new_company = Company(c_id = user.u_id, c_name = c_name, hr_contact = hr_contact, website = website, approval_status = approval_status)
+  new_company = Company(c_id = user.u_id, c_name = c_name, hr_contact = hr_contact, website = website, industry=industry, approval_status = approval_status)
 
 
   db.session.add(new_company)

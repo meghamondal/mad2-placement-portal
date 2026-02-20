@@ -18,6 +18,9 @@ def login():
   
   user = User.query.filter_by(email = email).first_or_404()
 
+  if not user.active:
+    return jsonify({"message": "Account is deactivated by the Admin"}), 403
+
   if not user:
     return jsonify({"message" : "User not found"}), 404
   

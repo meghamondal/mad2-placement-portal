@@ -21,7 +21,7 @@ class CompanyService():
     if not comp:
       raise ServiceError("Company details does not exists...", 404)
     
-    editable_fields = ["c_name", "hr_contact", "website", "approval_status"]
+    editable_fields = ["c_name", "hr_contact", "website", "industry","approval_status"]
     for key, value in data.items():
       if key in editable_fields and value is not None:
         setattr(comp, key, value)

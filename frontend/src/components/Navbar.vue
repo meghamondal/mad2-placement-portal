@@ -4,7 +4,7 @@ export default {
   name: "Navbar",
   data() {
     return {
-      searchQuery: "",
+      // searchQuery: "",
       auth: useAuthStore()
     };
   },
@@ -15,7 +15,7 @@ export default {
     isAuthenticated() { return this.auth.isAuthenticated;}
   },
   methods: {
-    Search() { console.log("Search:", this.searchQuery);},
+    // Search() { console.log("Search:", this.searchQuery);},
     logout() {this.auth.logout();
       this.$router.push("/");
     },
@@ -47,10 +47,10 @@ export default {
           <router-link class="nav-link" to="/company/dashboard">Company Dashboard</router-link>
         </li>
       </ul>
-      <form class="d-flex me-3" v-if="isAuthenticated" @submit.prevent="Search">
+      <!-- <form class="d-flex me-3" v-if="isAuthenticated" @submit.prevent="Search">
       <input class="form-control me-2" type="search" placeholder="Search" v-model="searchQuery">
       <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+      </form> -->
       <span class="navbar-text text-light ms-4 me-3" v-if="isAuthenticated">
         Welcome {{ auth.user?.email}}
       </span>

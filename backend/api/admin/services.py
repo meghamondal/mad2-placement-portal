@@ -17,6 +17,9 @@ class AdminService():
   @staticmethod
   def stud_details(stud_id):
     stud = Student.query.filter_by(stud_id = stud_id).all()
+    for s in stud:
+      user_cred = User.query.filter_by(u_id = s.stud_id).first()
+      s.active = user_cred.active
     if not stud:
       raise ServiceError("Student details does not exists...", 404)
     return stud
@@ -58,6 +61,9 @@ class AdminService():
   @staticmethod
   def comp_details(c_id):
     comp = Company.query.filter_by(c_id = c_id).all()
+    for c in comp:
+      user_cred = User.query.filter_by(u_id = c.c_id).first()
+      c.active = user_cred.active
     if not comp:
       raise ServiceError("Company details does not exists...", 404)
     return comp
@@ -96,7 +102,7 @@ class AdminService():
   @staticmethod
   def delete_comp(c_id):
     # comp = Company.query.filter_by(c_id = c_id).first()
-    comp = Company.query.get(c_id).first()
+    comp = Company.query.get(c_id)
     user = User.query.get(comp.c_id)
     if comp is None:
       raise ServiceError("Company details does not exists...", 404)

@@ -42,6 +42,7 @@ class Company(db.Model):
   c_name=db.Column(db.String, nullable=False)
   hr_contact=db.Column(db.String, nullable=False)
   website=db.Column(db.String, nullable=False)
+  industry=db.Column(db.String, nullable=False)
   approval_status=db.Column(db.Enum("pending", "approved", "rejected"), default="pending")
   p_drives=db.relationship("Placement_drive", cascade="all,delete", backref="company", lazy=True)
 

@@ -7,7 +7,8 @@ company_fields = {
    "c_id": fields.Integer,
    "c_name": fields.String,
    "hr_contact": fields.String,
-   "website": fields.String
+   "website": fields.String,
+   "industry": fields.String,
 }
 
 pdrive_fields = {
@@ -32,6 +33,7 @@ comp_parser = reqparse.RequestParser()
 comp_parser.add_argument("c_name", type=str)
 comp_parser.add_argument("hr_contact", type=str)
 comp_parser.add_argument("website", type=str)
+comp_parser.add_argument("industry", type=str)
 
 pd_parser = reqparse.RequestParser()
 pd_parser.add_argument("job_title", type=str)
