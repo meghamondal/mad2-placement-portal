@@ -1,4 +1,4 @@
-from flask_restful import Resource, fields, marshal_with, reqparse
+from flask_restful import Resource, fields, marshal_with, reqparse, request
 from flask_security import auth_required, roles_required, current_user
 from api.admin.services import AdminService
 from datetime import datetime
@@ -80,6 +80,15 @@ class AdminStudListResource(Resource):
   def get(self):
     return AdminService.get_stud_list()
   
+class AdminStudActiveEditResource(Resource):
+  @auth_required("token")
+  @roles_required("admin")
+  def patch(self, stud_id):
+    stud_edit = AdminService.edit_stud_active(stud_id)
+    return {"message": "Student active status updated successfully..."}, 200
+  
+
+  
 class AdminCompResource(Resource):
   @auth_required("token")
   @roles_required("admin")
@@ -118,6 +127,13 @@ class AdminCompEditResource(Resource):
     comp_edit = AdminService.edit_company_status(c_id, args["approval_status"])
     return comp_edit
   
+class AdminCompActiveEditResource(Resource):
+  @auth_required("token")
+  @roles_required("admin")
+  def patch(self, c_id):
+    comp_edit = AdminService.edit_comp_active(c_id)
+    return {"message": "Company active status updated successfully..."}, 200
+  
 class AdminpdResource(Resource):
   @auth_required("token")
   @roles_required("admin")
@@ -142,6 +158,13 @@ class AdminpdEditResource(Resource):
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     pd_edit = AdminService.edit_pd_status(pd_id, args["pd_status"])
     return pd_edit
+  
+class AdminPdPendingListResource(Resource):
+  @auth_required("token")
+  @roles_required("admin")
+  @marshal_with(pd_fields)
+  def get(self):
+    return AdminService.get_pd_list_p()
   
 class AdminAppListResource(Resource):
   @auth_required("token")

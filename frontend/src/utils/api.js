@@ -38,7 +38,7 @@ export default {
   post(endpoint, data){
     return httpRequest(endpoint, "POST", data);
   },
-  patch(path, data) {
+  patch(endpoint, data) {
     return httpRequest(endpoint, "PATCH", data);
   },
   delete(endpoint) {

@@ -5,6 +5,9 @@ export default {
   
   data() {
     return {
+      studentCount: 0,
+      companyCount: 0,
+      pdCount: 0,
       students: [],
       selectedStud: null,
       companies: [],
@@ -16,12 +19,25 @@ export default {
     };
   },
   created() {
+    this.loadCounts();
     this.loadStudents();
     this.loadCompanies();
     this.loadPd();
     this.loadApp();
   },
   methods: {
+    async loadCounts() {
+      this.errorMsg = "";
+      try{
+        const data = await api.get("/admin_api/counts");
+        this.studentCount = data.student_count;
+        this.companyCount = data.company_count;
+        this.pdCount = data.pd_count;
+      }
+      catch (error) {
+        this.errorMsg = error.message || "can't fetch the counts...";
+      }
+    },
     async loadStudents() {
       this.errorMsg = "";
       try{
@@ -129,6 +145,28 @@ export default {
         this.errorMsg = error.message || "can't fetch the applications...";
       }
     },
+    async stud_a_edit(id) {
+      try {
+        await api.patch(`/admin_api/stud_edit/${id}`);
+        this.selectedStud.active = !this.selectedStud.active;
+        // this.loadStudents();
+        // this.viewStud(id);
+      }
+      catch (error) {
+        this.errorMsg = error.message || "Error in updation...";
+      }
+    },
+    async comp_a_edit(id) {
+      try {
+        await api.patch(`/admin_api/comp_edit/${id}`);
+        this.selectedComp.active = !this.selectedComp.active;
+        // this.loadStudents();
+        // this.viewStud(id);
+      }
+      catch (error) {
+        this.errorMsg = error.message || "Error in updation...";
+      }
+    },
     cancel() {
       this.selectedStud = null;
       this.selectedComp = null;
@@ -141,6 +179,25 @@ export default {
 </script>
 
 <template>
+  <div class="container mt-4">
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <h5 class="text-muted">Total Registered Students...</h5>
+      <h4 class="fw-bold text-primary">{{ studentCount }}</h4>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <h5 class="text-muted">Total Registered Companies...</h5>
+      <h4 class="fw-bold text-primary">{{ companyCount }}</h4>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+      <h5 class="text-muted">Total created placement drives...</h5>
+      <h4 class="fw-bold text-primary">{{ pdCount }}</h4>
+    </div>
+  </div>
+  <!-- student -->
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
@@ -178,6 +235,7 @@ export default {
           <p><strong>Graduation Year: </strong>{{ selectedStud.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ selectedStud.cgpa }}</p>
           <a :href="`http://127.0.0.1:5000/${selectedStud.resume_file}`" target="_blank">View Resume</a>
+          <button :class="selectedStud.active ? 'btn btn-success' : 'btn btn-danger'" @click="stud_a_edit(selectedStud.stud_id)">{{ selectedStud.active ? "Activate" : "Deactivate" }}</button>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
@@ -220,6 +278,7 @@ export default {
           <p><strong>HR Contact: </strong>{{ selectedComp.hr_contact}}</p>
           <p><strong>Website: </strong>{{ selectedComp.website }}</p>
           <p><strong>Approval Status: </strong>{{ selectedComp.approval_status }}</p>
+          <button :class="selectedComp.active ? 'btn btn-danger' : 'btn btn-success'" @click="comp_a_edit(selectedComp.c_id)">{{ selectedComp.active ? "Deactivate" : "Activate" }}</button>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>
       </div>

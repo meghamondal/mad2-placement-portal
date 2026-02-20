@@ -39,6 +39,15 @@ class AdminService():
     db.session.delete(user)
     db.session.commit()
     return "Deleted Successfully", 200
+  
+  @staticmethod
+  def edit_stud_active(stud_id):
+    user = User.query.get(stud_id)
+    if not user:
+      raise ServiceError("User not found...", 404)
+    user.active = not user.active
+    db.session.commit()
+    return user
 
 
   @staticmethod
@@ -74,12 +83,20 @@ class AdminService():
       raise ServiceError("Invalid Status", 400)
     
     comp.approval_status = approval_status
+    user = User.query.get(c_id)
+    if user:
+      if approval_status == "approved":
+        user.active = True
+      else:
+        user.active = False
+
     db.session.commit()
     return comp
   
   @staticmethod
   def delete_comp(c_id):
-    comp = Company.query.filter_by(c_id = c_id).first()
+    # comp = Company.query.filter_by(c_id = c_id).first()
+    comp = Company.query.get(c_id).first()
     user = User.query.get(comp.c_id)
     if comp is None:
       raise ServiceError("Company details does not exists...", 404)
@@ -87,6 +104,21 @@ class AdminService():
     db.session.delete(user)
     db.session.commit()
     return "Deleted Successfully", 200
+  
+  @staticmethod
+  def edit_comp_active(c_id):
+    user = User.query.get(c_id)
+    if not user:
+      raise ServiceError("User not found...", 404)
+    user.active = not user.active
+    comp = Company.query.get(c_id)
+    if not comp:
+      raise ServiceError("Company not found...", 404)
+    if user.active is False:
+      comp.approval_status = "pending"
+    db.session.commit()
+    return user, comp
+
  
   @staticmethod
   def pd_count():
@@ -115,9 +147,23 @@ class AdminService():
     if pd_status not in status:
       raise ServiceError("Invalid Status", 400)
     
+    comp = Company.query.get(pd.c_id)
+    if not comp:
+      raise ServiceError("Company related to this placement drive is not found...", 404)
+    
     pd.pd_status = pd_status
+    
+    if comp.approval_status == "pending":
+      pd.pd_status = "pending"
+    else:
+      pd.pd_status = pd_status
     db.session.commit()
     return pd
+  
+  @staticmethod
+  def get_pd_list_p():
+    pd_p = Placement_drive.query.filter_by(pd_status="pending").all()
+    return pd_p
   
   @staticmethod
   def get_app_list():

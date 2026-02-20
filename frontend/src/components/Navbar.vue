@@ -18,7 +18,7 @@ export default {
     Search() { console.log("Search:", this.searchQuery);},
     logout() {this.auth.logout();
       this.$router.push("/");
-    }
+    },
   }
 };
 </script>
@@ -33,6 +33,12 @@ export default {
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item" v-if="isAdmin">
           <router-link class="nav-link" to="/admin/dashboard">Admin Dashboard</router-link>
+        </li>
+        <li class="nav-item" v-if="isAdmin">
+          <router-link class="nav-link" to="/pendingComp">Pending Companies</router-link>
+        </li>
+        <li class="nav-item" v-if="isAdmin">
+          <router-link class="nav-link" to="/pendingPd">Pending Placement Drives</router-link>
         </li>
         <li class="nav-item" v-if="isStudent">
           <router-link class="nav-link" to="/student/dashboard">Student Dashboard</router-link>
