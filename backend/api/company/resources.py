@@ -20,7 +20,8 @@ pdrive_fields = {
   "min_cgpa": fields.Float,
   "eligible_year": fields.Integer,
   "application_deadline": fields.DateTime,
-  "pd_status": fields.String
+  "pd_status": fields.String,
+  'company_details': fields.Nested(company_fields, attribute='company')
 }
 
 app_fields = {
@@ -73,13 +74,31 @@ class CompanypdcreateResource(Resource):
     comp_create = CompanyService.create_placement_drives(current_user.u_id, args)
     return comp_create
   
+class CompanypdEditResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  @marshal_with(pdrive_fields)
+  def patch(self, pd_id):
+    args = pd_parser.parse_args()
+    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    pd_edit = CompanyService.edit_pddetails(current_user.u_id, pd_id, args)
+    return pd_edit, 200
+
 class CompanypdListResource(Resource):
   @auth_required("token")
   @roles_required("company")
   @marshal_with(pdrive_fields)
   def get(self):
-    pd_list = CompanyService.get_app_list(current_user.u_id)
+    pd_list = CompanyService.get_pd_list(current_user.u_id)
     return pd_list
+  
+class CompanypdResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  @marshal_with(pdrive_fields)
+  def get(self, pd_id):
+    pd_details = CompanyService.pd_details(pd_id)
+    return pd_details
 
 
 class CompanyAppListResource(Resource):
@@ -100,3 +119,15 @@ class CompanyAppEditResource(Resource):
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     app_edit = CompanyService.edit_applicants_status(app_id, args["app_status"])
     return app_edit
+  
+class CompCountResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  def get(self):
+    c_id = current_user.u_id
+    return{
+      "pd_count": CompanyService.pd_count(c_id),
+      "active_pd_count": CompanyService.active_pd_count(c_id),
+      "app_count": CompanyService.app_count(c_id),
+      "short_app_count": CompanyService.short_app_count(c_id)
+  }, 200

@@ -1,33 +1,50 @@
 <script>
 import api from '@/utils/api';
 export default {
-  name: "PendingCompany",
-
+  name: "AdminDashboard",
+  
   data() {
     return {
       p_drives: [],
       selectedPd: null,
+      pdSearch:"",
       errorMsg: ""
     };
   },
+  computed: {
+    filteredP_drives() {
+      const text = this.pdSearch.toLowerCase()
+      if (!text) { return this.p_drives }
+      return this.p_drives.filter(pd => {
+        const searchId = String(pd.pd_id).includes(text)
+        const searchCName = pd.company_details.c_name.toLowerCase().includes(text)
+        const searchJobtitle = pd.job_title.toLowerCase().includes(text)
+        const searchPdstatus = pd.pd_status.toLowerCase().includes(text)
+        const searchBranch = pd.eligible_branch.toLowerCase().includes(text)
+        return searchId || searchCName || searchJobtitle || searchBranch || searchPdstatus
+      })
+    }
+  },
   created() {
-    this.loadpPd();
+    this.loadPd();
   },
   methods: {
-    async loadpPd() {
+    async loadPd() {
       this.errorMsg = "";
       try{
-        const data = await api.get("/admin_api/pd_plist");
+        const data = await api.get("/comp_api/comp_pdlist");
         this.p_drives = data;
+        console.log(data);
+        
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the placement drives...";
+        this.errorMsg = error.message || "can't fetch the placement derives...";
       }
     },
     async viewPd(pd_id) {
       this.errorMsg = "";
       try{
-        const data = await api.get(`/admin_api/pd_details/${pd_id}`);
+        const data = await api.get(`/comp_api/comp_pd_details/${pd_id}`);
         if (Array.isArray(data)){this.selectedPd = data[0];}
         else{this.selectedPd = data;}
       }
@@ -35,33 +52,24 @@ export default {
         this.errorMsg = error.message || "can't fetch the details...";
       }
     },
-    async editStatus(pd) {
-      this.errorMsg = "";
-      try{
-        await api.patch(`/admin_api/pd_status/${pd.pd_id}`,{
-          pd_status: pd.pd_status
-        }
-        )
-        this.loadpPd()
-      }
-      catch (error) {
-        this.errorMsg = error.message || "Error in updation...";
-      }
-    },
     cancel() {
-      this.selectedComp = null;
       this.selectedPd = null;
-      console.log("Details closed...")
+      this.errorMsg = "";
     }
-    }
+  }
 }
 </script>
-
 <template>
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
-        <h4 class="mb-0">Pending Placement drives...</h4>
+        <div class=" d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Created Placement drives...</h4>
+          <form class="d-flex me-3 input-group input-group-sm" style="max-width: 350px;">
+            <input class="form-control me-2" type="search" placeholder="Search" v-model="pdSearch">
+            <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i>Search</button>
+          </form>
+        </div>
         <div class="card-body">
           <table class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
@@ -75,7 +83,7 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(pd, id) in p_drives" :key="pd.pd_id">
+              <tr v-for="(pd, id) in filteredP_drives" :key="pd.pd_id">
                 <td>{{  id+1  }}</td>
                 <td>{{ pd.pd_id  }}</td>
                 <td>{{ pd.c_id  }}</td>
@@ -83,12 +91,7 @@ export default {
                 <td>{{ pd.job_title }}</td>
                 <td class="text-center">
                   <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View</button>
-                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="pd.pd_status" @change="editStatus(pd)">
-                    <option selected>Change Status</option>
-                    <option value="approved">Approve</option>
-                    <option value="rejected">Reject</option>
-                    <option value="pending">Pending</option>
-                  </select>
+                  <!-- <button class="btn btn-warning" @click="editPd(pd)">View</button> -->
                 </td>
               </tr>
             </tbody>

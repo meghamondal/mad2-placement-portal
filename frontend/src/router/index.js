@@ -16,6 +16,7 @@ const router = createRouter({
     {path: '/company/register', component: () => import("@/pages/CompReg.vue") },
     {path: '/pendingComp', component: () => import("@/pages/PendingComp.vue") },
     {path: '/pendingPd', component: () => import("@/pages/PendingPd.vue") },
+    {path: '/pd_list', component: () => import("@/pages/PdList.vue") },
 
   ],
 });
