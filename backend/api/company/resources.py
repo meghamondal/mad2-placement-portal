@@ -3,6 +3,17 @@ from flask_security import auth_required, roles_required, current_user
 from api.company.services import CompanyService
 from datetime import datetime
 
+student_fields = {
+  "stud_id": fields.Integer,
+  "f_name": fields.String,
+  "l_name": fields.String,
+  "resume_file": fields.String,
+  "dob": fields.DateTime,
+  "graduation_year": fields.Integer,
+  "cgpa": fields.Float,
+  "active": fields.Boolean
+}
+
 company_fields = {
    "c_id": fields.Integer,
    "c_name": fields.String,
@@ -27,7 +38,9 @@ pdrive_fields = {
 app_fields = {
   "app_id": fields.Integer,
   "pd_id": fields.Integer,
-  "app_status": fields.String
+  "app_status": fields.String,
+  "student_details": fields.Nested(student_fields, attribute='student'),
+  "pd_details": fields.Nested(pdrive_fields, attribute='placement_d')
 }
 
 comp_parser = reqparse.RequestParser()
@@ -83,6 +96,7 @@ class CompanypdEditResource(Resource):
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     pd_edit = CompanyService.edit_pddetails(current_user.u_id, pd_id, args)
     return pd_edit, 200
+  
 
 class CompanypdListResource(Resource):
   @auth_required("token")

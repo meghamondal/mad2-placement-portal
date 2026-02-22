@@ -53,7 +53,7 @@ export default {
       }
     },
     editComp(company) {
-      this.selectedComp = null;
+      // this.selectedComp = null;
       this.compEdit = { ...company };
       this.isEditing = true;
     },
