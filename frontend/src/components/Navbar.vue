@@ -49,9 +49,9 @@ export default {
         <li class="nav-item" v-if="isCompany">
           <router-link class="nav-link" to="/pd_list">Placement Drive List</router-link>
         </li>
-        <!-- <li class="nav-item" v-if="isCompany">
-          <router-link class="nav-link" to="/app_list">Applications List</router-link>
-        </li> -->
+        <li class="nav-item" v-if="isCompany">
+          <router-link class="nav-link" to="/short_app_list">Shortlisted Applications List</router-link>
+        </li>
       </ul>
       <!-- <form class="d-flex me-3" v-if="isAuthenticated" @submit.prevent="Search">
       <input class="form-control me-2" type="search" placeholder="Search" v-model="searchQuery">

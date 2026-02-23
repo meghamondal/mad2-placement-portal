@@ -68,7 +68,8 @@ export default {
                 <th>S. No</th>
               <th>Company ID</th>
               <th>Name</th>
-              <th class="text-center">Actions</th>
+              <th class="text-center">Status</th>
+              <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -77,14 +78,17 @@ export default {
                 <td>{{company.c_id  }}</td>
                 <td>{{ company.c_name }}</td>
                 <td class="text-center">
-                  <button class="btn btn-primary" @click="viewComp(company.c_id)">View</button>
-                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="company.approval_status" @change="editStatus(company)">
-                    <option selected>Change Status</option>
+                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="company.approval_status">
+                    <option disabled value="">Change Status</option>
                     <option value="approved">Approve</option>
                     <option value="rejected">Reject</option>
                     <option value="pending">Pending</option>
                   </select>
                   
+                </td>
+                <td class="button-group">
+                  <button class="btn btn-primary" @click="viewComp(company.c_id)">View Details</button>
+                  <button class="btn btn-success" @click="editStatus(company)">Update</button>
                 </td>
               </tr>
             </tbody>
@@ -106,3 +110,10 @@ export default {
     </div>
   </div> 
 </template>
+
+<style scoped>
+.button-group button{
+  margin: 0 0.5rem;
+
+}
+</style>

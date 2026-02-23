@@ -71,7 +71,8 @@ export default {
               <th>Company ID</th>
               <th>Company Name</th>
               <th>Job Title</th>
-              <th class="text-center">Actions</th>
+              <th class="text-center">Status</th>
+              <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -82,13 +83,16 @@ export default {
                 <td>{{ pd.company_details.c_name  }}</td>
                 <td>{{ pd.job_title }}</td>
                 <td class="text-center">
-                  <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View</button>
-                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="pd.pd_status" @change="editStatus(pd)">
-                    <option selected>Change Status</option>
+                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="pd.pd_status" >
+                    <option disabled value="">Change Status</option>
                     <option value="approved">Approve</option>
                     <option value="rejected">Reject</option>
                     <option value="pending">Pending</option>
                   </select>
+                </td>
+                <td class="button-group">
+                  <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View Details</button>
+                  <button class="btn btn-success" @click="editStatus(pd)">Update</button>
                 </td>
               </tr>
             </tbody>
@@ -113,3 +117,10 @@ export default {
     </div>
   </div> 
 </template>
+
+<style scoped>
+.button-group button{
+  margin: 0 0.5rem;
+
+}
+</style>

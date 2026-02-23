@@ -1,4 +1,5 @@
-from models import Company, Placement_drive, Application, Student, db
+from models import Company, Placement_drive, Application, Student, Interview, db
+from sqlalchemy import or_
 from datetime import datetime
 
 
@@ -133,3 +134,66 @@ class CompanyService():
   def short_app_count(c_id):
     total_short_app = Application.query.join(Placement_drive).filter(Placement_drive.c_id==c_id, Application.app_status == "shortlisted").count()
     return total_short_app
+  
+  @staticmethod
+  def short_app_list():
+    short_app = Application.query.filter(or_(Application.app_status == "shortlisted", Application.app_status == "interview scheduled")).all()
+    return short_app
+  
+  @staticmethod
+  def schedule_interview(app_id, data):
+    app = Application.query.get(app_id)
+    if app is None:
+      raise ServiceError("Application does not exists...", 404)
+    if app.app_status != "shortlisted":
+      raise ServiceError("Application is not shortlisted by the company...", 403)
+    if app.app_status == "rejected":
+      raise ServiceError("application is  rejected by the company...", 403)
+    
+    intw = Interview(
+      app_id = app_id,
+      scheduled=data.get("scheduled"),
+      intw_status="scheduled",
+      remarks=data.get("remarks"),
+    )
+    app.app_status = "interview scheduled"
+    db.session.add(intw)
+    db.session.add(app)
+    db.session.commit()
+    return intw
+  
+  @staticmethod
+  def edit_intw_pass(app_id):
+    app = Application.query.filter_by(app_id = app_id).first()
+    if not app:
+      raise ServiceError("Application not found...", 404)
+    if app.app_status != "interview scheduled":
+      raise ServiceError("Interview is not scheduled for this application...", 400)
+    intw = Interview.query.filter_by(app_id=app_id).first()
+    if not intw:
+      raise ServiceError("Interview related to this application id not found...", 404)
+    if intw.scheduled > datetime.now():
+      raise ServiceError("Interview is not completed yet...", 400)
+    intw.intw_status = "passed"
+    app.app_status = "selected"
+
+    db.session.commit()
+    return intw
+  
+  @staticmethod
+  def edit_intw_fail(app_id):
+    app = Application.query.filter_by(app_id = app_id).first()
+    if not app:
+      raise ServiceError("Application not found...", 404)
+    if app.app_status != "interview scheduled":
+      raise ServiceError("Interview is not scheduled for this application...", 400)
+    intw = Interview.query.filter_by(app_id=app_id).first()
+    if not intw:
+      raise ServiceError("Interview related to this application id not found...", 404)
+    if intw.scheduled > datetime.now():
+      raise ServiceError("Interview is not completed yet...", 400)
+    intw.intw_status = "failed"
+    app.app_status = "rejected"
+
+    db.session.commit()
+    return intw

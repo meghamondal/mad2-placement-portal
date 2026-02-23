@@ -319,6 +319,7 @@ export default {
                 <th>S. No</th>
               <th>Company ID</th>
               <th>Name</th>
+              <th>Status</th>
               <th class="text-center">Actions</th>
               </tr>
             </thead>
@@ -327,6 +328,7 @@ export default {
                 <td>{{  id+1  }}</td>
                 <td>{{company.c_id  }}</td>
                 <td>{{ company.c_name }}</td>
+                <td>{{ company.approval_status }}</td>
                 <td class="text-center">
                   <button class="btn btn-primary" @click="viewComp(company.c_id)">View</button>
                   <button class="btn btn-danger" @click="deleteComp(company.c_id)">Delete</button>

@@ -43,7 +43,7 @@ class Company(db.Model):
   hr_contact=db.Column(db.String, nullable=False)
   website=db.Column(db.String, nullable=False)
   industry=db.Column(db.String, nullable=False)
-  approval_status=db.Column(db.Enum("pending", "approved", "rejected"), default="pending")
+  approval_status=db.Column(db.Enum("pending", "approved", "rejected", "blocked"), default="pending")
   p_drives=db.relationship("Placement_drive", cascade="all,delete", backref="company", lazy=True)
 
 class Placement_drive(db.Model):
@@ -65,5 +65,14 @@ class Application(db.Model):
   pd_id=db.Column(db.Integer, db.ForeignKey('placement_d.pd_id'))
   stud_id=db.Column(db.Integer, db.ForeignKey('student.stud_id'))
   app_date=db.Column(db.DateTime, nullable=False, default=datetime.now())
-  app_status=db.Column(db.Enum("applied", "shortlisted", "selected", "rejected"), default="applied")
+  app_status=db.Column(db.Enum("applied", "shortlisted", "interview scheduled", "selected", "rejected"), default="applied")
+  interviews=db.relationship("Interview", cascade="all,delete", backref="application", lazy=True)
 
+class Interview(db.Model):
+  __tablename__="interview"
+  intw_id=db.Column(db.Integer, primary_key = True)
+  app_id=db.Column(db.Integer, db.ForeignKey('application.app_id'))
+  scheduled=db.Column(db.DateTime, nullable=False)
+  intw_status=db.Column(db.Enum("scheduled", "passed", "failed"), default="scheduled")
+  remarks=db.Column(db.Text, nullable=False)
+  

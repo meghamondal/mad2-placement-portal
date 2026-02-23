@@ -18,6 +18,8 @@ const router = createRouter({
     {path: '/pendingPd', component: () => import("@/pages/PendingPd.vue") },
     {path: '/pd_list', component: () => import("@/pages/PdList.vue") },
     {path: '/app_list', component: () => import("@/pages/AppList.vue") },
+    {path: '/short_app_list', component: () => import("@/pages/ShortAppList.vue") },
+    {path: '/app_intw', component: () => import("@/pages/InterviewSchedule.vue") },
 
   ],
 });

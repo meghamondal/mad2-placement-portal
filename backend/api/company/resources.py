@@ -43,6 +43,19 @@ app_fields = {
   "pd_details": fields.Nested(pdrive_fields, attribute='placement_d')
 }
 
+intw_fields = {
+  "intw_id": fields.Integer,
+  "app_id": fields.Integer,
+  "scheduled": fields.DateTime,
+  "intw_status": fields.String,
+  "remarks": fields.String
+}
+
+intw_parser = reqparse.RequestParser()
+intw_parser.add_argument("scheduled", type=lambda x: datetime.strptime(x, "%Y-%m-%d %H:%M:%S"), required=True)
+intw_parser.add_argument("remarks", type=str)
+intw_parser.add_argument("intw_status", type=str)
+
 comp_parser = reqparse.RequestParser()
 comp_parser.add_argument("c_name", type=str)
 comp_parser.add_argument("hr_contact", type=str)
@@ -145,3 +158,36 @@ class CompCountResource(Resource):
       "app_count": CompanyService.app_count(c_id),
       "short_app_count": CompanyService.short_app_count(c_id)
   }, 200
+
+class CompAppShortlistedResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  @marshal_with(app_fields)
+  def get(self):
+    return CompanyService.short_app_list()
+  
+class CompanyScheduleIntwResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  @marshal_with(intw_fields)
+  def post(self, app_id):
+    args = intw_parser.parse_args()
+    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    schedule_intw = CompanyService.schedule_interview(app_id, args)
+    return schedule_intw
+  
+class CompanyIntwPassStatusResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  @marshal_with(intw_fields)
+  def patch(self, app_id):
+    intw_pass = CompanyService.edit_intw_pass(app_id)
+    return intw_pass
+  
+class CompanyIntwFailStatusResource(Resource):
+  @auth_required("token")
+  @roles_required("company")
+  @marshal_with(intw_fields)
+  def patch(self, app_id):
+    intw_fail = CompanyService.edit_intw_fail(app_id)
+    return intw_fail

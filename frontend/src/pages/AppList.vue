@@ -79,12 +79,12 @@ export default {
             <thead class="table-ligh">
               <tr>
                 <th>S. No</th>
-              <th>Application ID</th>
-              <th>Pd ID</th>
-              <th>Job Title</th>
-              <th>Student Name</th>
-              <th>Application Status</th>
-              <th class="text-center">Actions</th>
+                <th>Application ID</th>
+                <th>Pd ID</th>
+                <th>Job Title</th>
+                <th>Student Name</th>
+                <th>Application Status</th>
+                <th class="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -96,13 +96,16 @@ export default {
                 <td>{{ app.student_details.f_name }} {{ app.student_details.l_name }}</td>
                 <td>{{ app.app_status }}</td>
                 <td class="text-center">
-                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status" @change="editStatus(app)">
+                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status">
                     <option disabled value="">Change Status</option>
                     <option value="applied">applied</option>
                     <option value="shortlisted">shortlisted</option>
                     <option value="selected">selected</option>
                     <option value="rejected">rejected</option>
                   </select>
+                </td>
+                <td class="button-group">
+                  <button class="btn btn-success" @click="editStatus(app)">Update</button>
                 </td>
               </tr>
             </tbody>
