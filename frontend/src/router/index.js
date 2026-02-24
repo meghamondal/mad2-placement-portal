@@ -20,6 +20,7 @@ const router = createRouter({
     {path: '/app_list', component: () => import("@/pages/AppList.vue") },
     {path: '/short_app_list', component: () => import("@/pages/ShortAppList.vue") },
     {path: '/app_intw', component: () => import("@/pages/InterviewSchedule.vue") },
+    {path: '/student/pd_list', component: () => import("@/pages/StudPdlist.vue") },
 
   ],
 });

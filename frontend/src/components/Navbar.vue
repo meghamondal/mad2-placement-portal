@@ -43,6 +43,9 @@ export default {
         <li class="nav-item" v-if="isStudent">
           <router-link class="nav-link" to="/student/dashboard">Student Dashboard</router-link>
         </li>
+        <li class="nav-item" v-if="isStudent">
+          <router-link class="nav-link" to="/student/pd_list">Placement Drives</router-link>
+        </li>
         <li class="nav-item" v-if="isCompany">
           <router-link class="nav-link" to="/company/dashboard">Company Dashboard</router-link>
         </li>

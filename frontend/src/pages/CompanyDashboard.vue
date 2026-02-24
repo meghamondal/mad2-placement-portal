@@ -49,7 +49,7 @@ export default {
         this.company = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "Error in updation..." 
+        this.errorMsg = error.message || "Company data not found...";
       }
     },
     editComp(company) {
@@ -65,7 +65,7 @@ export default {
         this.compEdit = null;
       }
       catch (error) {
-        this.errorMsg = error.message || "Error in updation..." 
+        this.errorMsg = error.message || "Error in updation...";
       }
     },
     openCform() {

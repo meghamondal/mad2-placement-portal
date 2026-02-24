@@ -7,6 +7,7 @@ export default {
     return {
       applications: [],
       appSearch:"",
+      selectedApp: null,
       errorMsg: ""
     };
   },
@@ -59,6 +60,13 @@ export default {
         this.errorMsg = error.message || "Error in updation...";
       }
     },
+    viewStud(app) {
+      this.selectedApp = app;
+    },
+    cancel() {
+      this.selectedApp = null;
+      this.errorMsg = "";
+    }
   }
 }
 </script>
@@ -95,6 +103,7 @@ export default {
                 <td>{{ app.pd_details.job_title  }}</td>
                 <td>{{ app.student_details.f_name }} {{ app.student_details.l_name }}</td>
                 <td>{{ app.app_status }}</td>
+                <td ><button class="btn btn-primary" @click="viewStud(app)">View</button></td>
                 <td class="text-center">
                   <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status">
                     <option disabled value="">Change Status</option>
@@ -110,6 +119,18 @@ export default {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+      <div v-if="selectedApp" class="card mt-4 shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">Student Details</div>
+        <div class="card-body">
+          <p><strong>ID: </strong>{{ selectedApp.student_details.stud_id }}</p>
+          <p><strong>Name: </strong>{{ selectedApp.student_details.f_name }} {{ selectedApp.student_details.l_name }}</p>
+          <p><strong>Date of Birth: </strong>{{ selectedApp.student_details.dob }}</p>
+          <p><strong>Graduation Year: </strong>{{ selectedApp.student_details.graduation_year }}</p>
+          <p><strong>CGPA: </strong>{{ selectedApp.student_details.cgpa }}</p>
+          <a :href="`http://127.0.0.1:5000/${selectedApp.student_details.resume_file}`" target="_blank">View Resume</a>
+          <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>
       </div>
     </div>

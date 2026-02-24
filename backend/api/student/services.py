@@ -35,8 +35,15 @@ class StudentService():
   @staticmethod
   def get_placement_drives(stud_id):
     stud = Student.query.get(stud_id)
-    pdrives = Placement_drive.query.filter(Placement_drive.pd_status=="Approved", Placement_drive.min_cgpa<=stud.cgpa).all()
+    pdrives = Placement_drive.query.filter(Placement_drive.pd_status=="approved", Placement_drive.min_cgpa<=stud.cgpa).all()
     return pdrives
+  
+  @staticmethod
+  def pd_details(pd_id):
+    pd = Placement_drive.query.filter_by(pd_id = pd_id).all()
+    if not pd:
+      raise ServiceError("Placement Drive details does not exists...", 404)
+    return pd 
   
   #apply to pdrive
   @staticmethod

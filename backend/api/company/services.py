@@ -136,8 +136,9 @@ class CompanyService():
     return total_short_app
   
   @staticmethod
-  def short_app_list():
-    short_app = Application.query.filter(or_(Application.app_status == "shortlisted", Application.app_status == "interview scheduled")).all()
+  def short_app_list(comp_id):
+    # short_app = Application.query.filter(or_(Application.app_status == "shortlisted", Application.app_status == "interview scheduled")).all()
+    short_app = Application.query.join(Placement_drive).filter(Placement_drive.c_id == comp_id,or_(Application.app_status == "shortlisted", Application.app_status == "interview scheduled")).all()
     return short_app
   
   @staticmethod

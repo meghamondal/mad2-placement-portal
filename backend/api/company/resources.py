@@ -164,7 +164,8 @@ class CompAppShortlistedResource(Resource):
   @roles_required("company")
   @marshal_with(app_fields)
   def get(self):
-    return CompanyService.short_app_list()
+    comp_id = current_user.u_id
+    return CompanyService.short_app_list(comp_id)
   
 class CompanyScheduleIntwResource(Resource):
   @auth_required("token")

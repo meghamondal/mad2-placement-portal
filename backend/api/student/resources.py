@@ -3,6 +3,8 @@ from flask_restful import Resource, fields, marshal_with, reqparse
 from flask_security import auth_required, roles_required, current_user
 from api.student.services import StudentService
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
 # marshal fields
 
@@ -16,14 +18,24 @@ student_fields = {
   "cgpa": fields.Float,
 }
 
+company_fields = {
+   "c_id": fields.Integer,
+   "c_name": fields.String,
+   "hr_contact": fields.String,
+   "website": fields.String,
+   "industry": fields.String,
+}
+
 pdrive_fields = {
   "pd_id": fields.Integer,
+  "c_id": fields.Integer,
   "job_title": fields.String,
   "job_description": fields.String,
   "eligible_branch": fields.String,
   "min_cgpa": fields.Float,
   "eligible_year": fields.Integer,
-  "application_deadline": fields.DateTime
+  "application_deadline": fields.DateTime,
+  'company_details': fields.Nested(company_fields, attribute='company')
 }
 
 app_fields = {
@@ -58,9 +70,22 @@ class StudentResource(Resource):
   @roles_required("student")
   @marshal_with(student_fields)
   def patch(self):
-    args = stud_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
-    stud_edit = StudentService.edit_details(current_user.u_id, args)
+    data = request.form.to_dict()
+    resume_file = request.files.get("resume_file")
+    allowed_extension=["pdf"]
+    if resume_file:
+      file_extension = resume_file.filename.split('.')[-1].lower()
+      if file_extension not in allowed_extension:
+        return {"message": "Only pdf files are allowed"}, 400
+      filename = secure_filename(current_user.email + "." +file_extension)
+      path = os.path.join("static/resumes", filename)
+      resume_file.save(path)
+      data["resume_file"] = path
+    if "dob" in data and data["dob"]:
+      data["dob"] = datetime.strptime(data["dob"], "%Y-%m-%d").date()
+    data = {k: v for k, v in data.items() if v != ""}
+    stud_edit = StudentService.edit_details(current_user.u_id, data)
+
     return stud_edit
   
 
@@ -72,16 +97,24 @@ class StudentpdListResource(Resource):
     pd_list = StudentService.get_placement_drives(current_user.u_id)
     return pd_list
   
+class StudentpdResource(Resource):
+  @auth_required("token")
+  @roles_required("student")
+  @marshal_with(pdrive_fields)
+  def get(self, pd_id):
+    pd_details = StudentService.pd_details(pd_id)
+    return pd_details
+  
 class StudentpdApplyResource(Resource):
   @auth_required("token")
   @roles_required("student")
-  def post(self):
-    pd_id = pd_parser.parse_args()["pd_id"]
+  def post(self, pd_id):
+    # pd_id = pd_parser.parse_args()["pd_id"]
 
     output = StudentService.apply_to_pdrive(current_user.u_id, pd_id)
 
-    if output == "Already applied...":
-      return {"message": "You have already applied "}, 400
+    # if output == "Already applied...":
+    #   return {"message": "You have already applied "}, 400
     return {"message": "Submission Successful..."}, 201
   
 class StudentAppHistoryResource(Resource):
