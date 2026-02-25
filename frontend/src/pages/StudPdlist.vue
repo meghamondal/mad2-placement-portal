@@ -6,9 +6,26 @@ export default {
     return {
       p_drives: [],
       applications: [],
+      pdSearch:"",
       selectedPd: null,
       errorMsg: ""
     };
+  },
+  computed: {
+    filteredP_drives() {
+      const text = this.pdSearch.toLowerCase()
+      if (!text) { return this.p_drives }
+      return this.p_drives.filter(pd => {
+        const searchId = String(pd.pd_id).includes(text)
+        const searchCName = pd.company_details.c_name.toLowerCase().includes(text)
+        const searchJobtitle = pd.job_title.toLowerCase().includes(text)
+        return searchId || searchCName || searchJobtitle 
+      })
+    },
+    applied_pds() {
+      return this.applications.map(application => application.pd_id
+      )
+    }
   },
   created() {
     this.loadPd();
@@ -73,12 +90,12 @@ export default {
 
     }
   },
-  computed: {
-    applied_pds() {
-      return this.applications.map(application => application.pd_id
-      )
-    }
-  }
+  // computed: {
+  //   applied_pds() {
+  //     return this.applications.map(application => application.pd_id
+  //     )
+  //   }
+  // }
 
 }
 </script>
@@ -87,7 +104,13 @@ export default {
   <div class="container mt-4">
     <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded">
       <div class="card-header bg-light text-black">
-        <h4 class="mb-0">Placement drives...</h4>
+        <div class=" d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Placement drives...</h4>
+          <form class="d-flex me-3 input-group input-group-sm" style="max-width: 350px;">
+            <input class="form-control me-2" type="search" placeholder="Search" v-model="pdSearch">
+            <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i>Search</button>
+          </form>
+        </div>
         <div class="card-body">
           <table class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
@@ -101,7 +124,8 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(pd, id) in p_drives" :key="pd.pd_id">
+              <!-- <tr v-for="(pd, id) in p_drives" :key="pd.pd_id"> -->
+                <tr v-for="(pd, id) in filteredP_drives" :key="pd.pd_id">
                 <td>{{  id+1  }}</td>
                 <td>{{ pd.pd_id  }}</td>
                 <td>{{ pd.c_id  }}</td>

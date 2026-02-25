@@ -38,11 +38,23 @@ pdrive_fields = {
   'company_details': fields.Nested(company_fields, attribute='company')
 }
 
+intw_fields = {
+  "intw_id": fields.Integer,
+  "scheduled": fields.DateTime,
+  "intw_status": fields.String,
+  "remarks": fields.String
+}
+
 app_fields = {
   "app_id": fields.Integer,
   "pd_id": fields.Integer,
-  "app_status": fields.String
+  "app_status": fields.String,
+  "pd_details": fields.Nested(pdrive_fields, attribute='placement_d'),
+  "intw_details": fields.List(fields.Nested(intw_fields), attribute='interviews'),
+  "company_name": fields.String(attribute='placement_d.company.c_name')
 }
+
+
 
 # parser fields
 
@@ -126,6 +138,11 @@ class StudentAppHistoryResource(Resource):
     return app_history
 
 
-
+class StudOfferLetterResource(Resource):
+  @auth_required("token")
+  @roles_required("student")
+  def get(self, app_id):
+    offer_letter = StudentService.offer_letter(current_user.u_id, app_id)
+    return {"offer_letter": offer_letter}, 200
 
   

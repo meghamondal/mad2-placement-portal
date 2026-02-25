@@ -68,3 +68,33 @@ class StudentService():
   def get_app_history(stud_id):
     app = Application.query.filter_by(stud_id = stud_id).all()
     return app
+  
+  @staticmethod
+  def offer_letter(stud_id, app_id):
+    app = Application.query.get(app_id)
+    if not app:
+      return {"message": "Application not found..."},404
+    if app.stud_id != stud_id:
+      return {"message": "Access Denied..."},403
+    if app.app_status != "selected":
+      return {"message": "Ofeer Letter unavailable"},400
+    content = f"""
+OFFER LETTER
+
+Dear {app.student.f_name},
+
+              Congratulations!
+
+We are pleased to inform you that you are selected 
+for the position of {app.placement_d.job_title}.
+
+Your annual CTC for this role is fixed at "XX" LPA.
+
+We wish you success in your professional journey.
+
+Regards,
+{app.placement_d.company.c_name}
+
+""" 
+    return content
+    
