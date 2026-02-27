@@ -122,6 +122,8 @@ class AdminService():
       raise ServiceError("Company not found...", 404)
     if user.active is False:
       comp.approval_status = "blocked"
+    elif user.active:
+      comp.approval_status = "approved"
     db.session.commit()
     return user, comp
 

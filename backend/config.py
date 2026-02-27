@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 load_dotenv()
 class Config:
   SQL_ALCHEMY_TRACK_MODIFICATIONS = False
-
 class LocalDevelopmentConfig(Config):
   SQLALCHEMY_DATABASE_URI = "sqlite:///database.sqlite3"
   DEBUG = True

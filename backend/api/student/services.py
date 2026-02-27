@@ -36,6 +36,7 @@ class StudentService():
   def get_placement_drives(stud_id):
     stud = Student.query.get(stud_id)
     pdrives = Placement_drive.query.filter(Placement_drive.pd_status=="approved", Placement_drive.min_cgpa<=stud.cgpa).all()
+    print("db for student pd list ")
     return pdrives
   
   @staticmethod

@@ -2,6 +2,8 @@ from flask_restful import Resource, fields, marshal_with, reqparse
 from flask_security import auth_required, roles_required, current_user
 from api.company.services import CompanyService
 from datetime import datetime
+from extensions import cache
+
 
 student_fields = {
   "stud_id": fields.Integer,
@@ -76,6 +78,7 @@ appstatus_parser.add_argument("app_status", type=str, required=True)
 class CompanyResource(Resource):
   @auth_required("token")
   @roles_required("company")
+  @cache.cached(key_prefix="get_compdetails")
   @marshal_with(company_fields)
   def get(self):
     comp = CompanyService.comp_details(current_user.u_id)
@@ -88,6 +91,7 @@ class CompanyResource(Resource):
     args = comp_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     comp_edit = CompanyService.edit_details(current_user.u_id, args)
+    cache.delete("get_compdetails")
     return comp_edit
   
 class CompanypdcreateResource(Resource):
@@ -98,6 +102,8 @@ class CompanypdcreateResource(Resource):
     args = pd_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     comp_create = CompanyService.create_placement_drives(current_user.u_id, args)
+    cache.delete("get_comppdlist")
+    cache.delete("get_compcount")
     return comp_create
   
 class CompanypdEditResource(Resource):
@@ -108,12 +114,16 @@ class CompanypdEditResource(Resource):
     args = pd_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     pd_edit = CompanyService.edit_pddetails(current_user.u_id, pd_id, args)
+    cache.delete("get_comppdlist")
+    cache.delete_memoized(CompanypdResource.get, CompanypdResource, pd_id)
+    cache.delete("get_compcount")
     return pd_edit, 200
   
 
 class CompanypdListResource(Resource):
   @auth_required("token")
   @roles_required("company")
+  @cache.cached(key_prefix="get_comppdlist")
   @marshal_with(pdrive_fields)
   def get(self):
     pd_list = CompanyService.get_pd_list(current_user.u_id)
@@ -122,6 +132,7 @@ class CompanypdListResource(Resource):
 class CompanypdResource(Resource):
   @auth_required("token")
   @roles_required("company")
+  @cache.memoize(timeout=60)
   @marshal_with(pdrive_fields)
   def get(self, pd_id):
     pd_details = CompanyService.pd_details(pd_id)
@@ -131,6 +142,7 @@ class CompanypdResource(Resource):
 class CompanyAppListResource(Resource):
   @auth_required("token")
   @roles_required("company")
+  @cache.memoize(timeout=60)
   @marshal_with(app_fields)
   def get(self, pd_id):
     app_list = CompanyService.get_pd_app(pd_id)
@@ -145,11 +157,15 @@ class CompanyAppEditResource(Resource):
     args = appstatus_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     app_edit = CompanyService.edit_applicants_status(app_id, args["app_status"])
+    cache.delete_memoized(CompanyAppListResource.get, CompanyAppListResource, app_edit.pd_id)
+    cache.delete("get_compapplist")
+    cache.delete("get_compcount")
     return app_edit
   
 class CompCountResource(Resource):
   @auth_required("token")
   @roles_required("company")
+  @cache.cached(key_prefix="get_compcount")
   def get(self):
     c_id = current_user.u_id
     return{
@@ -162,6 +178,7 @@ class CompCountResource(Resource):
 class CompAppShortlistedResource(Resource):
   @auth_required("token")
   @roles_required("company")
+  @cache.cached(key_prefix="get_compapplist")
   @marshal_with(app_fields)
   def get(self):
     comp_id = current_user.u_id
@@ -175,6 +192,8 @@ class CompanyScheduleIntwResource(Resource):
     args = intw_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     schedule_intw = CompanyService.schedule_interview(app_id, args)
+    cache.delete_memoized(CompanyAppListResource.get, CompanyAppListResource, schedule_intw.application.pd_id)
+    cache.delete("get_compcount")
     return schedule_intw
   
 class CompanyIntwPassStatusResource(Resource):
@@ -183,6 +202,10 @@ class CompanyIntwPassStatusResource(Resource):
   @marshal_with(intw_fields)
   def patch(self, app_id):
     intw_pass = CompanyService.edit_intw_pass(app_id)
+    pd_id = intw_pass.pd_id
+    cache.delete_memoized(CompanyAppListResource.get, CompanyAppListResource, pd_id)
+    cache.delete("get_compapplist")
+    cache.delete("get_compcount")
     return intw_pass
   
 class CompanyIntwFailStatusResource(Resource):
@@ -191,4 +214,8 @@ class CompanyIntwFailStatusResource(Resource):
   @marshal_with(intw_fields)
   def patch(self, app_id):
     intw_fail = CompanyService.edit_intw_fail(app_id)
+    pd_id = intw_fail.pd_id
+    cache.delete_memoized(CompanyAppListResource.get, CompanyAppListResource, pd_id)
+    cache.delete("get_compapplist")
+    cache.delete("get_compcount")
     return intw_fail

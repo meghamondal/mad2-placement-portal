@@ -2,6 +2,7 @@ from flask_restful import Resource, fields, marshal_with, reqparse, request
 from flask_security import auth_required, roles_required, current_user
 from api.admin.services import AdminService
 from datetime import datetime
+from extensions import cache
 
 student_fields = {
   "stud_id": fields.Integer,
@@ -65,6 +66,7 @@ class CountResource(Resource):
 class AdminStudResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.memoize(timeout=60)
   @marshal_with(student_fields)
   def get(self, stud_id):
     stud_details = AdminService.stud_details(stud_id)
@@ -74,11 +76,14 @@ class AdminStudResource(Resource):
   @roles_required("admin")
   def delete(self, stud_id):
     AdminService.delete_stud(stud_id)
+    cache.delete("get_astudlist")
+    cache.delete_memoized(AdminStudResource.get, AdminStudResource, stud_id)
     return {"message": "Student deleted successfully"}, 200
 
 class AdminStudListResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.cached(key_prefix="get_astudlist")
   @marshal_with(student_fields)
   def get(self):
     return AdminService.get_stud_list()
@@ -88,6 +93,8 @@ class AdminStudActiveEditResource(Resource):
   @roles_required("admin")
   def patch(self, stud_id):
     stud_edit = AdminService.edit_stud_active(stud_id)
+    cache.delete("get_astudlist")
+    cache.delete_memoized(AdminStudResource.get, AdminStudResource, stud_id)
     return {"message": "Student active status updated successfully..."}, 200
   
 
@@ -104,11 +111,14 @@ class AdminCompResource(Resource):
   @roles_required("admin")
   def delete(self, c_id):
     AdminService.delete_comp(c_id)
+    cache.delete("get_acomplist")
+    cache.delete("get_pcomplist")
     return {"message": "Company deleted successfully"}, 200
   
 class AdminCompListResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.cached(key_prefix="get_acomplist")
   @marshal_with(company_fields)
   def get(self):
     return AdminService.get_comp_list()
@@ -116,6 +126,7 @@ class AdminCompListResource(Resource):
 class AdminCompPendingListResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.cached(key_prefix="get_pcomplist")
   @marshal_with(company_fields)
   def get(self):
     return AdminService.get_comp_list_p()
@@ -128,6 +139,8 @@ class AdminCompEditResource(Resource):
     args = compstatus_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     comp_edit = AdminService.edit_company_status(c_id, args["approval_status"])
+    cache.delete("get_acomplist")
+    cache.delete("get_pcomplist")
     return comp_edit
   
 class AdminCompActiveEditResource(Resource):
@@ -135,6 +148,8 @@ class AdminCompActiveEditResource(Resource):
   @roles_required("admin")
   def patch(self, c_id):
     comp_edit = AdminService.edit_comp_active(c_id)
+    cache.delete("get_acomplist")
+    cache.delete("get_pcomplist")
     return {"message": "Company active status updated successfully..."}, 200
   
 class AdminpdResource(Resource):
@@ -148,6 +163,7 @@ class AdminpdResource(Resource):
 class AdminPdListResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.cached(key_prefix="get_apdlist")
   @marshal_with(pd_fields)
   def get(self):
     return AdminService.get_pd_list()
@@ -160,11 +176,14 @@ class AdminpdEditResource(Resource):
     args = pdstatus_parser.parse_args()
     args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
     pd_edit = AdminService.edit_pd_status(pd_id, args["pd_status"])
+    cache.delete("get_apdlist")
+    cache.delete("get_ppdlist")
     return pd_edit
   
 class AdminPdPendingListResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.cached(key_prefix="get_ppdlist")
   @marshal_with(pd_fields)
   def get(self):
     return AdminService.get_pd_list_p()
@@ -172,6 +191,7 @@ class AdminPdPendingListResource(Resource):
 class AdminAppListResource(Resource):
   @auth_required("token")
   @roles_required("admin")
+  @cache.cached(key_prefix="get_aapplist")
   @marshal_with(app_fields)
   def get(self):
     return AdminService.get_app_list()

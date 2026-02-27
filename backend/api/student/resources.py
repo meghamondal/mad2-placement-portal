@@ -5,6 +5,7 @@ from api.student.services import StudentService
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
+from extensions import cache
 
 # marshal fields
 
@@ -72,6 +73,7 @@ pd_parser.add_argument("pd_id", type=int, required=True)
 class StudentResource(Resource):
   @auth_required("token")
   @roles_required("student")
+  @cache.cached(key_prefix="get_stud_details")
   @marshal_with(student_fields)
   def get(self):
     stud = StudentService.stud_details(current_user.u_id)
@@ -97,6 +99,7 @@ class StudentResource(Resource):
       data["dob"] = datetime.strptime(data["dob"], "%Y-%m-%d").date()
     data = {k: v for k, v in data.items() if v != ""}
     stud_edit = StudentService.edit_details(current_user.u_id, data)
+    cache.delete_memoized(StudentResource.gety)
 
     return stud_edit
   
@@ -104,17 +107,21 @@ class StudentResource(Resource):
 class StudentpdListResource(Resource):
   @auth_required("token")
   @roles_required("student")
+  @cache.cached(key_prefix="get_stud_pdlist")
   @marshal_with(pdrive_fields)
   def get(self):
     pd_list = StudentService.get_placement_drives(current_user.u_id)
+    print("db is called for pd list")
     return pd_list
   
 class StudentpdResource(Resource):
   @auth_required("token")
   @roles_required("student")
+  @cache.memoize(timeout=60)
   @marshal_with(pdrive_fields)
   def get(self, pd_id):
     pd_details = StudentService.pd_details(pd_id)
+    print("caching is used")
     return pd_details
   
 class StudentpdApplyResource(Resource):
@@ -124,6 +131,8 @@ class StudentpdApplyResource(Resource):
     # pd_id = pd_parser.parse_args()["pd_id"]
 
     output = StudentService.apply_to_pdrive(current_user.u_id, pd_id)
+    cache.delete_memoized(StudentpdListResource.get)
+    cache.delete_memoized(StudentAppHistoryResource.get)
 
     # if output == "Already applied...":
     #   return {"message": "You have already applied "}, 400
@@ -132,6 +141,7 @@ class StudentpdApplyResource(Resource):
 class StudentAppHistoryResource(Resource):
   @auth_required("token")
   @roles_required("student")
+  @cache.cached(key_prefix="get_stud_apphistory")
   @marshal_with(app_fields)
   def get(self):
     app_history = StudentService.get_app_history(current_user.u_id)

@@ -6,6 +6,9 @@ from api.student import student, stud_api, stud_api_bp
 from api.company import company, comp_api_bp
 from api.admin import admin_api_bp
 from flask_cors import CORS
+from datetime import datetime
+from flask_caching import Cache
+from extensions import cache
 
 
 def create_app():
@@ -18,7 +21,7 @@ def create_app():
   CORS(app)
 
   from flask_security.datastore import SQLAlchemyUserDatastore
-  from extensions import security
+  from extensions import security, cache
 
   datastore = SQLAlchemyUserDatastore(db, User, Role)
   security.init_app(app, datastore = datastore)#register_blueprint=False
@@ -33,6 +36,15 @@ def create_app():
   app.register_blueprint(comp_api_bp)
   app.register_blueprint(admin_api_bp)
 
+  cache.init_app(app)
+
+  @app.route('/cache')
+  @cache.cached(timeout=1)
+  def cache():
+      print("function executed")
+      return {"date" : str(datetime.utcnow())}
+
+
 
   # for trail
   with app.app_context():
@@ -40,6 +52,8 @@ def create_app():
   return app
 
 app = create_app()
+
+# from datetime import time
 
 if __name__ == "__main__":
   app.run()
