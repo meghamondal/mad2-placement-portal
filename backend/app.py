@@ -9,6 +9,8 @@ from flask_cors import CORS
 from datetime import datetime
 from flask_caching import Cache
 from extensions import cache
+from celery_setup import celery_init_app
+from celery.schedules import crontab
 
 
 def create_app():
@@ -38,22 +40,52 @@ def create_app():
 
   cache.init_app(app)
 
+  # celery config
+  app.config.from_mapping(
+     CELERY=dict(
+        broker_url="redis://localhost:6379/0",
+        result_backend="redis://localhost:6379/1",
+        timezone = 'Asia/Kolkata'
+      ),
+  )
+  celery_app = celery_init_app(app)
+
   @app.route('/cache')
   @cache.cached(timeout=1)
   def cache():
       print("function executed")
       return {"date" : str(datetime.utcnow())}
 
-
+  
 
   # for trail
   with app.app_context():
     db.create_all()
-  return app
+  return app, celery_app
 
-app = create_app()
+app, celery = create_app()
 
 # from datetime import time
+
+from tasks.test import add
+@app.route("/celery-tasks")
+def task():
+  add.delay(1,2)
+  return {"message": "task started"}
+
+@celery.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    # Calls test('hello') every 10 seconds.
+    sender.add_periodic_task(10.0, add.s(1,5), name='add every 10')
+
+    # Calls test('world') every 30 seconds
+    sender.add_periodic_task(30.0, add.s('world'), expires=10)
+
+    # Executes every Monday morning at 7:30 a.m.
+    sender.add_periodic_task(
+        crontab(hour=10, minute=31, day_of_week="*"),
+        add.s(10, 20),
+    )
 
 if __name__ == "__main__":
   app.run()

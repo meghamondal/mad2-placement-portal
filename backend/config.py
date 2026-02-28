@@ -9,5 +9,6 @@ class LocalDevelopmentConfig(Config):
   SECRET_KEY = os.environ.get("SECRET_KEY")
   SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT")
   SECURITY_PASSWORD_HASH = "argon2"
+
 class ProductionConfig(Config):
     DEBUG = False

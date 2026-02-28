@@ -177,5 +177,6 @@ class AdminService():
   def get_app_list():
     app = Application.query.all()
     return app
+  
 
-    
+

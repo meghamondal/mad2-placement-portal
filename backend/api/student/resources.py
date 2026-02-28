@@ -99,7 +99,7 @@ class StudentResource(Resource):
       data["dob"] = datetime.strptime(data["dob"], "%Y-%m-%d").date()
     data = {k: v for k, v in data.items() if v != ""}
     stud_edit = StudentService.edit_details(current_user.u_id, data)
-    cache.delete_memoized(StudentResource.gety)
+    cache.delete("get_stud_details")
 
     return stud_edit
   
@@ -131,8 +131,9 @@ class StudentpdApplyResource(Resource):
     # pd_id = pd_parser.parse_args()["pd_id"]
 
     output = StudentService.apply_to_pdrive(current_user.u_id, pd_id)
-    cache.delete_memoized(StudentpdListResource.get)
-    cache.delete_memoized(StudentAppHistoryResource.get)
+    cache.delete("get_stud_pdlist")
+    cache.delete("get_stud_apphistory")
+    cache.delete_memoized(StudentpdResource.get, StudentpdResource, pd_id )
 
     # if output == "Already applied...":
     #   return {"message": "You have already applied "}, 400
@@ -156,3 +157,34 @@ class StudOfferLetterResource(Resource):
     return {"offer_letter": offer_letter}, 200
 
   
+from tasks.test import csv_report
+
+class StudExportResource(Resource):
+  @auth_required("token")
+  @roles_required("student")
+  def post(self):
+    stud_id = current_user.u_id
+    result = csv_report.delay(stud_id)
+    return {
+      "task_id": result.id,
+      "result": result.result,
+      "message": "Export started"
+    }
+from celery.result import AsyncResult
+from flask import send_from_directory
+
+class StudExportStatus(Resource):
+  @auth_required("token")
+  @roles_required("student")
+  def get(self, task_id):
+    res = AsyncResult(task_id)
+    return send_from_directory('static', res.result)
+
+# @app.route('/api/csv_result/<id>')# just create to test the status of result
+# def csv_result(id):
+#   result = AsyncResult(id)
+#   return {
+#     "ready": result.ready(),
+#     "successful": result.successful(),
+#     "value": result.result if result.ready() else None,
+#   }

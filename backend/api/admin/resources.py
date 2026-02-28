@@ -195,6 +195,9 @@ class AdminAppListResource(Resource):
   @marshal_with(app_fields)
   def get(self):
     return AdminService.get_app_list()
+  
+
+
 
   
     
