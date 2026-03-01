@@ -5,7 +5,7 @@ comp_api_bp = Blueprint("comp_api", __name__, url_prefix="/comp_api")
 
 comp_api = Api(comp_api_bp)
 
-from .resources import CompanyResource, CompanypdcreateResource, CompanypdEditResource,CompanypdListResource, CompanypdResource, CompanyAppListResource, CompanyAppEditResource, CompCountResource, CompAppShortlistedResource, CompanyScheduleIntwResource, CompanyIntwPassStatusResource, CompanyIntwFailStatusResource
+from .resources import CompanyResource, CompanypdcreateResource, CompanypdEditResource,CompanypdListResource, CompanypdResource, CompanyAppListResource, CompanyAppEditResource, CompCountResource, CompAppShortlistedResource, CompanyScheduleIntwResource, CompanyIntwPassStatusResource, CompanyIntwFailStatusResource, CompExportResource, CompExportStatus
 
 comp_api.add_resource(CompanyResource, "/comp_details")
 comp_api.add_resource(CompanypdcreateResource, "/comp_pdcreate")
@@ -19,3 +19,6 @@ comp_api.add_resource( CompAppShortlistedResource, "/short_app_list")
 comp_api.add_resource( CompanyScheduleIntwResource, "/intw_schedule/<int:app_id>")
 comp_api.add_resource( CompanyIntwPassStatusResource, "/intw_pass/<int:app_id>")
 comp_api.add_resource( CompanyIntwFailStatusResource, "/intw_fail/<int:app_id>")
+
+comp_api.add_resource(CompExportResource, "/compexport_csv/<int:c_id>")
+comp_api.add_resource(CompExportStatus, "/compexport_status/<string:task_id>")

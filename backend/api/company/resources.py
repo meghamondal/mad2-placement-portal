@@ -219,3 +219,30 @@ class CompanyIntwFailStatusResource(Resource):
     cache.delete("get_compapplist")
     cache.delete("get_compcount")
     return intw_fail
+  
+from tasks.test import compcsv_report
+import time
+
+class CompExportResource(Resource):
+  # @auth_required("token")
+  # @roles_required("company")
+  def post(self,c_id):
+    result = compcsv_report.delay(c_id)
+    return {
+      "task_id": result.id,
+      "result": result.result,
+      "message": "Export started"
+    }
+from celery.result import AsyncResult
+from flask import send_from_directory, redirect
+
+class CompExportStatus(Resource):
+  # @auth_required("token")
+  # @roles_required("company") 
+  def get(self, task_id):
+    res = AsyncResult(task_id)
+    while not res.ready():
+      time.sleep(1)
+      filename = res.result
+      return redirect(f"/static/{filename}")
+    return send_from_directory('static', res.result)

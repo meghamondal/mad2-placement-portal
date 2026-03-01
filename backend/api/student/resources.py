@@ -158,12 +158,13 @@ class StudOfferLetterResource(Resource):
 
   
 from tasks.test import csv_report
+import time
 
 class StudExportResource(Resource):
-  @auth_required("token")
-  @roles_required("student")
-  def post(self):
-    stud_id = current_user.u_id
+  # @auth_required("token")
+  # @roles_required("student")
+  def post(self,stud_id):
+    # stud_id = current_user.u_id
     result = csv_report.delay(stud_id)
     return {
       "task_id": result.id,
@@ -171,20 +172,15 @@ class StudExportResource(Resource):
       "message": "Export started"
     }
 from celery.result import AsyncResult
-from flask import send_from_directory
+from flask import send_from_directory, redirect
 
 class StudExportStatus(Resource):
-  @auth_required("token")
-  @roles_required("student")
+  # @auth_required("token")
+  # @roles_required("student") 
   def get(self, task_id):
     res = AsyncResult(task_id)
+    while not res.ready():
+      time.sleep(1)
+      filename = res.result
+      return redirect(f"/static/{filename}")
     return send_from_directory('static', res.result)
-
-# @app.route('/api/csv_result/<id>')# just create to test the status of result
-# def csv_result(id):
-#   result = AsyncResult(id)
-#   return {
-#     "ready": result.ready(),
-#     "successful": result.successful(),
-#     "value": result.result if result.ready() else None,
-#   }

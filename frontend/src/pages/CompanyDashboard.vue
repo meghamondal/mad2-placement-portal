@@ -116,6 +116,15 @@ export default {
         this.errorMsg = error.message || "Placement Drive creation failed...";
       }
     },
+    async csvComp(){
+      try {
+        const response = await api.post(`/comp_api/compexport_csv/${this.company.c_id}`);
+        window.location.href = `http://127.0.0.1:5000/comp_api/compexport_status/${response.task_id}`;
+      }
+      catch (error) {
+        alert("Export Failed!")
+      }
+    },
     cancel() {
       this.compEdit = false;
       this.isEditing = false;
@@ -175,7 +184,10 @@ export default {
           <p><strong>HR Contact: </strong>{{ company.hr_contact}}</p>
           <p><strong>Website: </strong>{{ company.website }}</p>
           <p><strong>Industry: </strong>{{ company.industry }}</p>
-          <p><strong>Approval Status: </strong>{{ company.approval_status }}</p>        
+          <p><strong>Approval Status: </strong>{{ company.approval_status }}</p>
+          <div class="card mt-4 shadow-sm border-0">
+            <button class="btn btn-secondary" @click="csvComp">Download CSV</button>
+          </div>        
         </div>
       </div>
       <div v-if="isEditing" class="card mt-4 shadow-sm border-0">

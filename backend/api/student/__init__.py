@@ -14,5 +14,5 @@ stud_api.add_resource(StudentpdApplyResource, "/stud_apply/<int:pd_id>")
 stud_api.add_resource(StudentAppHistoryResource, "/stud_apps")
 stud_api.add_resource(StudOfferLetterResource, "/stud_offer/<int:app_id>")
 
-stud_api.add_resource(StudExportResource, "/export_csv")
+stud_api.add_resource(StudExportResource, "/export_csv/<int:stud_id>")
 stud_api.add_resource(StudExportStatus, "/export_status/<string:task_id>")

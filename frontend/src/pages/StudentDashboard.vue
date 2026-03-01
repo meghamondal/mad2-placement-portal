@@ -74,6 +74,15 @@ export default {
         this.errorMsg = error.message;
       }
     },
+    async csvStud(){
+      try {
+        const response = await api.post(`/api/export_csv/${this.student.stud_id}`);
+        window.location.href = `http://127.0.0.1:5000/api/export_status/${response.task_id}`;
+      }
+      catch (error) {
+        alert("Export Failed!")
+      }
+    },
     cancel() {
       this.studEdit = null;
       this.isEditing = false;
@@ -98,7 +107,10 @@ export default {
           <p><strong>Date of Birth: </strong>{{ student.dob}}</p>
           <p><strong>Graduation Year: </strong>{{ student.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ student.cgpa }}</p>
-          <a :href="`http://127.0.0.1:5000/${student.resume_file}`" target="_blank">View Resume</a>        
+          <a :href="`http://127.0.0.1:5000/${student.resume_file}`" target="_blank">View Resume</a>
+          <div class="card mt-4 shadow-sm border-0">
+            <button class="btn btn-secondary" @click="csvStud">Download CSV</button>
+          </div>        
         </div>
       </div>
       <div v-if="isEditing" class="card mt-4 shadow-sm border-0">
@@ -140,3 +152,5 @@ export default {
     </div>
   </div>
 </template>
+
+

@@ -1,6 +1,6 @@
 from celery import shared_task
 import datetime
-from models import Application
+from models import Application, Placement_drive
 import csv
 
 @shared_task()
@@ -19,6 +19,22 @@ def csv_report(stud_id):
       this_app = [s_no, a.stud_id, a.placement_d.company.c_name, a.placement_d.job_title, a.app_status, a.app_date]
       app_csv.writerow(this_app)
       s_no += 1
+
+  return csv_filename
+
+@shared_task(ignore_results=False, name="compcsv_report")
+def compcsv_report(c_id):
+  pd = Placement_drive.query.filter_by(c_id=c_id).all()
+  csv_filename = f"pdrives_{c_id}_{datetime.datetime.now().strftime('%f')}.csv"
+  with open(f'static/{csv_filename}', 'w', newline = "") as csvfile:
+    s_no = 1
+    pd_csv = csv.writer(csvfile, delimiter = ',')
+    pd_csv.writerow(['S No.', 'Company ID', 'Company Name', 'Job Title', 'Application Status', 'Student ID' ,'Student Name'])
+    for p in pd:
+      for a in p.applications:
+        this_pd = [s_no, p.c_id, p.company.c_name, p.job_title, a.app_status, a.student.stud_id ,f"{a.student.f_name} {a.student.l_name}"]
+        pd_csv.writerow(this_pd)
+        s_no += 1
 
   return csv_filename
 
