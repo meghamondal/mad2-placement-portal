@@ -1,6 +1,8 @@
 from celery import shared_task
 import datetime
-from models import Application, Placement_drive
+from models import Application, Placement_drive, User
+from render_utils import render_report
+from mail import send_email
 import csv
 
 @shared_task()
@@ -40,6 +42,25 @@ def compcsv_report(c_id):
 
 @shared_task(ignore_results = False, name="monthly_report")
 def monthly_report():
+  total_pd = Placement_drive.query.count()
+  total_app = Application.query.count()
+  total_selected_app = Application.query.filter_by(app_status="selected").count()
+  pd_rate = 0
+  if total_app > 0:
+    pd_rate = round((total_selected_app/total_app)*100, 2)
+  selection_density = 0
+  if total_pd > 0:
+    selection_density = round((total_selected_app/total_pd), 2)
+  monthly_report_data = {
+    "total_pd": total_pd,
+    "total_app": total_app,
+    "total_selected_app": total_selected_app,
+    "pd_rate": pd_rate,
+    "selection_density": selection_density
+  }
+  message = render_report("monthly_admin_report.html", monthly_report_data)
+  send_email("admin@example.com", subject = "Monthly Placement Activity Report", message=message)
+
   return "Monthly reports sent"
 
 @shared_task(ignore_results = False, name="daily_remainder")

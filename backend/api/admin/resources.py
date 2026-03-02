@@ -3,6 +3,7 @@ from flask_security import auth_required, roles_required, current_user
 from api.admin.services import AdminService
 from datetime import datetime
 from extensions import cache
+from tasks.test import monthly_report
 
 student_fields = {
   "stud_id": fields.Integer,
@@ -197,7 +198,12 @@ class AdminAppListResource(Resource):
     return AdminService.get_app_list()
   
 
-
+# class Adminmailhog(Resource):
+#   def get(self):
+#     res = monthly_report.delay()
+#     return {
+#       "result": res.result
+#     }
 
   
     

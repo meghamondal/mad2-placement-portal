@@ -11,6 +11,8 @@ from flask_caching import Cache
 from extensions import cache
 from celery_setup import celery_init_app
 from celery.schedules import crontab
+from tasks.test import monthly_report
+
 
 
 def create_app():
@@ -40,6 +42,7 @@ def create_app():
 
   cache.init_app(app)
 
+
   # celery config
   app.config.from_mapping(
      CELERY=dict(
@@ -48,7 +51,8 @@ def create_app():
         timezone = 'Asia/Kolkata'
       ),
   )
-  celery_app = celery_init_app(app)
+  celery = celery_init_app(app)
+  celery.autodiscover_tasks()
 
   @app.route('/cache')
   @cache.cached(timeout=1)
@@ -61,7 +65,7 @@ def create_app():
   # for trail
   with app.app_context():
     db.create_all()
-  return app, celery_app
+  return app, celery
 
 app, celery = create_app()
 
@@ -73,18 +77,12 @@ def task():
   add.delay(1,2)
   return {"message": "task started"}
 
-@celery.on_after_configure.connect
+@celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    # Calls test('hello') every 10 seconds.
-    sender.add_periodic_task(10.0, add.s(1,5), name='add every 10')
-
-    # Calls test('world') every 30 seconds
-    sender.add_periodic_task(30.0, add.s('world'), expires=10)
-
-    # Executes every Monday morning at 7:30 a.m.
-    sender.add_periodic_task(
-        crontab(hour=10, minute=31, day_of_week="*"),
-        add.s(10, 20),
+  sender.add_periodic_task(
+    # crontab(hour=10, minute=31, day_of_week="*"),
+    crontab(minute='*/2'),
+    monthly_report.s(),
     )
 
 if __name__ == "__main__":
