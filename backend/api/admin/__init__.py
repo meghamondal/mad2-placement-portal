@@ -4,7 +4,7 @@ admin_api_bp = Blueprint("admin_api", __name__, url_prefix="/admin_api")
 
 admin_api = Api(admin_api_bp)
 
-from .resources import CountResource, AdminStudResource, AdminStudActiveEditResource,AdminStudListResource, AdminCompResource, AdminCompListResource, AdminCompEditResource, AdminCompActiveEditResource, AdminpdResource, AdminpdEditResource, AdminAppListResource, AdminPdListResource, AdminCompPendingListResource, AdminPdPendingListResource, Adminmailhog
+from .resources import CountResource, AdminStudResource, AdminStudActiveEditResource,AdminStudListResource, AdminCompResource, AdminCompListResource, AdminCompEditResource, AdminCompActiveEditResource, AdminpdResource, AdminpdEditResource, AdminAppListResource, AdminPdListResource, AdminCompPendingListResource, AdminPdPendingListResource
 
 admin_api.add_resource(CountResource, "/counts")
 admin_api.add_resource(AdminStudResource, "/stud_details/<int:stud_id>")
