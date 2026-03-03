@@ -11,7 +11,7 @@ from flask_caching import Cache
 from extensions import cache
 from celery_setup import celery_init_app
 from celery.schedules import crontab
-from tasks.test import monthly_report, comp_monthly_report
+from tasks.test import monthly_report, comp_monthly_report, daily_remainder
 
 
 
@@ -89,6 +89,12 @@ def setup_periodic_tasks(sender, **kwargs):
     # crontab(hour=10, minute=31, day_of_week="*"),
     crontab(minute='*/2'),
     comp_monthly_report.s(),
+    )
+  
+  sender.add_periodic_task(
+    # crontab(hour=10, minute=30),
+    crontab(minute='*/2'),
+    daily_remainder.s(),
     )
 
 if __name__ == "__main__":

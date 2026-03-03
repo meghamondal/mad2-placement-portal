@@ -1,8 +1,9 @@
 from celery import shared_task
 import datetime
-from models import Application, Placement_drive, User, Company, Role
+from models import Application, Placement_drive, User, Company, Role, Student, Interview
 from render_utils import render_report
 from mail import send_email
+# from datetime import datetime, timedelta
 import csv
 
 @shared_task()
@@ -96,4 +97,43 @@ def comp_monthly_report():
 
 @shared_task(ignore_results = False, name="daily_remainder")
 def daily_remainder():
+  today = datetime.datetime.now()
+  upcoming = today + datetime.timedelta(days=2)
+  pd = Placement_drive.query.filter(Placement_drive.application_deadline >= today, Placement_drive.application_deadline <= upcoming).all()
+  for p in pd:
+    student = Student.query.all()
+    for s in student:
+      stud = User.query.get(s.stud_id)
+      if not stud or not stud.active:
+        continue
+      already_applied =Application.query.filter_by(pd_id=p.pd_id, stud_id=s.stud_id).first()
+      if already_applied:
+        continue
+      stud_app_daily_data = {
+        "student_name": s.f_name,
+        "job_title": p.job_title,
+        "application_deadline": p.application_deadline.strftime("%d.%m.%Y")
+      }
+      message = render_report("application_daily_reminder.html", stud_app_daily_data)
+      send_email(stud.email, subject = "Application Deadline Daily Reminder", message=message)
+
+  intw = Interview.query.filter(Interview.scheduled >= today, Interview.scheduled <= upcoming, Interview.intw_status == "scheduled").all()
+  for i in intw:
+    app = Application.query.get(i.app_id)
+    if not app:
+      continue
+    stud = Student.query.get(app.stud_id)
+    if not stud:
+      continue
+    user = User.query.get(stud.stud_id)
+    if not user or not user.active:
+      continue
+    pd = Placement_drive.query.get(app.pd_id)
+    stud_intw_daily_data = {
+      "student_name": stud.f_name,
+      "job_title": pd.job_title,
+      "interview_scheduled_at": i.scheduled.strftime("%d.%m.%Y, %H:%M")
+    }
+    message = render_report("intw_daily_reminder.html", stud_intw_daily_data)
+    send_email(user.email, subject = "Daily Upcoming Interview Scheduled Reminder", message=message)
   return "Delivery is sent to user"
