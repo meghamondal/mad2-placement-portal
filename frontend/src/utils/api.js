@@ -19,14 +19,18 @@ async function httpRequest(endpoint, method ="GET", data=null) {
   const response = await fetch(`${BASE_URL}${endpoint}`, options);
 
   if (!response.ok){
-    console.error("Status code: ", response.status);
+    const data = await response.json();
+    // console.error("Status code: ", response.status);
     if (response.status === 401) {
       throw new Error("Invalid credentials...");
     }
     if (response.status === 500) {
       throw new Error("Internal server error...");
     }
-    throw new Error("Not able to complete the request");
+    else{
+      throw new Error(data.message || "Not able to complete the request");
+    }
+    
   }
   return response.status === 204 ? null : response.json();
 }

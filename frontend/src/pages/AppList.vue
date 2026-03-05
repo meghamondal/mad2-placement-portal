@@ -109,7 +109,7 @@ export default {
                     <option disabled value="">Change Status</option>
                     <option value="applied">applied</option>
                     <option value="shortlisted">shortlisted</option>
-                    <option value="selected">selected</option>
+                    <!-- <option value="selected">selected</option> -->
                     <option value="rejected">rejected</option>
                   </select>
                 </td>

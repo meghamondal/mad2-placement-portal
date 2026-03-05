@@ -109,3 +109,9 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>

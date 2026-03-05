@@ -12,6 +12,7 @@ from extensions import cache
 from celery_setup import celery_init_app
 from celery.schedules import crontab
 from tasks.test import monthly_report, comp_monthly_report, daily_remainder
+from flask import jsonify
 
 
 

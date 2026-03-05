@@ -86,8 +86,11 @@ export default {
       console.log(this.applications);
       
       return this.applied_pds.includes(selectedPd.pd_id)
-
-
+    },
+    checkDeadline(application_deadline) {
+      const today = new Date();
+      const appDate = new Date(application_deadline);
+      return today > appDate
     }
   },
   // computed: {
@@ -150,9 +153,10 @@ export default {
           <p><strong>Min Cgpa: </strong>{{ selectedPd.min_cgpa }}</p>
           <p><strong>Eligible Year: </strong>{{ selectedPd.eligible_year }}</p>
           <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p>
-          <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p>
+          <!-- <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p> -->
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
-          <button v-if="!checkApplied(selectedPd)" class="btn btn-success" @click="studAppply(selectedPd.pd_id)">Apply</button>
+          <button v-if="checkDeadline(selectedPd.application_deadline)" class="btn btn-danger" disabled>Closed</button>
+          <button v-else-if="!checkApplied(selectedPd)" class="btn btn-success" @click="studAppply(selectedPd.pd_id)">Apply</button>
           <button v-else class="btn btn-secondary" disabled>Applied</button>
         </div>
       </div>

@@ -16,13 +16,14 @@ def login():
   if ( not email or not password):
     return jsonify({"message": "Invalid credentials..."}), 400
   
-  user = User.query.filter_by(email = email).first_or_404()
+  user = User.query.filter_by(email = email).first()
+
+  if not user:
+    return jsonify({"message" : "User not found"}), 404
 
   if not user.active:
     return jsonify({"message": "Account is deactivated by the Admin"}), 403
 
-  if not user:
-    return jsonify({"message" : "User not found"}), 404
   
   if not verify_password(password, user.password):
     return jsonify({"message" : "incorrect password"}), 401

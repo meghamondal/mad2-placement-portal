@@ -78,7 +78,7 @@ export default{
                 <!-- <td>{{ app.intw_details[0].scheduled  }}</td> -->
                 <td>{{ app.pd_details.job_title  }}</td>
                 <td>{{ app.app_status }}</td>
-                <button v-if="app.app_status === 'interview scheduled' || app.app_status === 'selected' || app.app_status === 'rejected'" class="btn btn-info" @click="viewIntw(app)">View Details</button>
+                <button v-if="app.app_status === 'interview scheduled' || app.app_status === 'selected'" class="btn btn-info" @click="viewIntw(app)">View Details</button>
               </tr>
             </tbody>
           </table>

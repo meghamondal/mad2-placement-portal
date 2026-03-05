@@ -21,7 +21,7 @@ export default {
     handleResume(event) {
       const file = event.target.files[0];
       if (!file){
-        this.errorMsg = "File doesn't exit...";
+        this.errorMsg = "File doesn't exist...";
         return;
       } 
       if (file.type !== "application/pdf") {
@@ -45,10 +45,10 @@ export default {
         this.errorMsg = "Please enter password...";
         return;
       }
-      // if (!this.password.length < 6){
-      //   this.errorMsg = "Password should have atleast 6 characters ...";
-      //   return;
-      // }
+      if (this.password.length < 6){
+        this.errorMsg = "Password should have atleast 6 characters ...";
+        return;
+      }
       if (!this.f_name){
         this.errorMsg = "Please enter your first name...";
         return;
@@ -86,12 +86,11 @@ export default {
         
         const response = await fetch("http://127.0.0.1:5000/api/student/register", {method: "POST", body: formData});
         const data = await response.json();
+        if(!response.ok){
+          throw new Error(data.message || "Registration failed...");
+        }
         alert("Registration successful...");
         this.$router.push("/login");
-
-        if(!response.ok){
-        throw new Error(data.message || "Registration failed...");
-      }
       
       }
       catch (error) {
@@ -152,3 +151,9 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>
