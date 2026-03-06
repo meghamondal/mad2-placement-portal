@@ -32,7 +32,9 @@ export default {
       try {
         await api.patch(`/comp_api/intw_pass/${app_id}`);
         alert("Interview Status Marked as pass")
-        this.loadSApp();
+        this.applications = this.applications.filter(
+        app => app.app_id !== app_id);
+        // this.loadSApp();
       }
       catch (error) {
         this.errorMsg = error.message;
@@ -43,7 +45,9 @@ export default {
       try {
         await api.patch(`/comp_api/intw_fail/${app_id}`);
         alert("Interview Status Marked as fail")
-        this.loadSApp();
+        this.applications = this.applications.filter(
+        app => app.app_id !== app_id);
+        // this.loadSApp();
       }
       catch (error) {
         this.errorMsg = error.message;
@@ -68,6 +72,7 @@ export default {
                 <th>Job Title</th>
                 <th>Student Name</th>
                 <th>Application Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>

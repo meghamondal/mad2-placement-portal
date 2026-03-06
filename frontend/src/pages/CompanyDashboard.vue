@@ -129,13 +129,13 @@ export default {
       this.compEdit = false;
       this.isEditing = false;
       this.isCreating = false;
-      this.job_title = "",
-      this.job_description = "",
-      this.eligible_branch = "",
-      this.min_cgpa = "",
-      this.eligible_year = "",
-      this.application_deadline = "",
-      this.isCreating = false
+      this.job_title = "";
+      this.job_description = "";
+      this.eligible_branch = "";
+      this.min_cgpa = "";
+      this.eligible_year = "";
+      this.application_deadline = "";
+      this.isCreating = false;
 
       this.errorMsg = "";
       console.log("Details closed...")
@@ -222,6 +222,7 @@ export default {
       <button class="btn btn-success mt-2" @click="openCform">+Create New Placement Drive</button>
       <div v-if="isCreating" class="card mt-4 shadow-sm border-0">
         <div class="card-body">
+          <p v-if="errorMsg" class="text-danger">{{ errorMsg }}</p>
           <form @submit.prevent="createPd">
             <div class="mb-3">
               <label for="job_title" class="form-label">Job Title: </label>
@@ -237,7 +238,7 @@ export default {
             </div>
             <div class="mb-3">
               <label for="min_cgpa" class="form-label">Minimum Cgpa: </label>
-              <input type="number" class="form-control"  placeholder="minimum cgpa" v-model="min_cgpa">
+              <input type="number" step="any" min="0" max="10" class="form-control"  placeholder="minimum cgpa" v-model="min_cgpa">
             </div>
             <div class="mb-3">
               <label for="eligible_year" class="form-label">Eligible Year: </label>

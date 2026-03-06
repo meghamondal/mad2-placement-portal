@@ -40,6 +40,9 @@ export default {
         <li class="nav-item" v-if="isAdmin">
           <router-link class="nav-link" to="/pendingPd">Pending Placement Drives</router-link>
         </li>
+         <li class="nav-item" v-if="isAdmin">
+          <router-link class="nav-link" to="/admin/summary">Summary</router-link>
+        </li>
         <li class="nav-item" v-if="isStudent">
           <router-link class="nav-link" to="/student/dashboard">Student Dashboard</router-link>
         </li>

@@ -61,10 +61,12 @@ class CompanyService():
   def edit_pddetails(c_id, pd_id,data):
     pd = Placement_drive.query.filter_by(pd_id=pd_id).first()
     if not pd:
-      raise ServiceError("Placement Drive details does not exists...", 404)
+      # raise ServiceError("Placement Drive details does not exists...", 404)
+      return {"message":"Placement Drive details does not exists..."}, 404
     
     if pd.c_id != c_id:
-      raise ServiceError("Placement Drive details cannot be accessed...", 403)
+      # raise ServiceError("Placement Drive details cannot be accessed...", 403)
+      return {"message": "Placement Drive details cannot be accessed..."}, 403
     
     editable_fields = ["job_title", "job_description", "eligible_branch", "min_cgpa", "eligible_year", "application_deadline"]
     for key, value in data.items():
@@ -179,7 +181,7 @@ class CompanyService():
     app.app_status = "selected"
 
     db.session.commit()
-    return intw
+    return app
   
   @staticmethod
   def edit_intw_fail(app_id):
@@ -197,4 +199,4 @@ class CompanyService():
     app.app_status = "rejected"
 
     db.session.commit()
-    return intw
+    return app

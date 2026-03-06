@@ -127,7 +127,7 @@ class AdminService():
     comp = Company.query.get(c_id)
     if not comp:
       # raise ServiceError("Company not found...", 404)
-      return {"message":"ompany not found..."}, 404
+      return {"message":"company not found..."}, 404
     if user.active is False:
       comp.approval_status = "blocked"
     elif user.active:

@@ -146,7 +146,7 @@ export default {
           <p><strong>Eligible Branch: </strong>{{ selectedPd.eligible_branch }}</p>
           <p><strong>Min Cgpa: </strong>{{ selectedPd.min_cgpa }}</p>
           <p><strong>Eligible Year: </strong>{{ selectedPd.eligible_year }}</p>
-          <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p>
+          <p><strong>Application Deadline: </strong>{{ new Date(selectedPd.application_deadline).toLocaleDateString() }}</p>
           <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>

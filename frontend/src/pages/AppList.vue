@@ -49,6 +49,7 @@ export default {
     },
     async editStatus(app) {
       this.errorMsg = "";
+      alert(`Status Selected: ${app.app_status}`)
       try{
         await api.patch(`/comp_api/comp_editastatus/${app.app_id}`,{
           app_status: app.app_status
@@ -92,7 +93,9 @@ export default {
                 <th>Job Title</th>
                 <th>Student Name</th>
                 <th>Application Status</th>
-                <th class="text-center">Actions</th>
+                <th class="text-center">View</th>
+                <th class="text-center">Change Status</th>
+                <th class="text-center">Update</th>
               </tr>
             </thead>
             <tbody>
@@ -105,16 +108,14 @@ export default {
                 <td>{{ app.app_status }}</td>
                 <td ><button class="btn btn-primary" @click="viewStud(app)">View</button></td>
                 <td class="text-center">
-                  <select class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status">
+                  <select v-if="app.app_status === 'applied'" class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status">
                     <option disabled value="">Change Status</option>
-                    <option value="applied">applied</option>
                     <option value="shortlisted">shortlisted</option>
-                    <!-- <option value="selected">selected</option> -->
                     <option value="rejected">rejected</option>
                   </select>
                 </td>
                 <td class="button-group">
-                  <button class="btn btn-success" @click="editStatus(app)">Update</button>
+                  <button v-if="app.app_status === 'applied'" class="btn btn-success" @click="editStatus(app)">Update</button>
                 </td>
               </tr>
             </tbody>

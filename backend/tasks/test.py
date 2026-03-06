@@ -59,7 +59,7 @@ def monthly_report():
     "pd_rate": pd_rate,
     "selection_density": selection_density
   }
-  message = render_report("monthly_admin_report.html", monthly_report_data)
+  message = render_report("templates/monthly_admin_report.html", monthly_report_data)
   send_email("admin@example.com", subject = "Monthly Placement Activity Report", message=message)
 
   return "Monthly reports sent"
@@ -90,7 +90,7 @@ def comp_monthly_report():
       "total_selected": total_selected,
       "pd_rate": pd_rate
     }
-    message = render_report("monthly_company_report.html", comp_monthly_report_data)
+    message = render_report("templates/monthly_company_report.html", comp_monthly_report_data)
     send_email(u.email, subject = "Monthly Activity Report for the Company", message=message)
 
   return "Monthly reports sent"
@@ -114,7 +114,7 @@ def daily_remainder():
         "job_title": p.job_title,
         "application_deadline": p.application_deadline.strftime("%d.%m.%Y")
       }
-      message = render_report("application_daily_reminder.html", stud_app_daily_data)
+      message = render_report("templates/application_daily_reminder.html", stud_app_daily_data)
       send_email(stud.email, subject = "Application Deadline Daily Reminder", message=message)
 
   intw = Interview.query.filter(Interview.scheduled >= today, Interview.scheduled <= upcoming, Interview.intw_status == "scheduled").all()
@@ -134,6 +134,6 @@ def daily_remainder():
       "job_title": pd.job_title,
       "interview_scheduled_at": i.scheduled.strftime("%d.%m.%Y, %H:%M")
     }
-    message = render_report("intw_daily_reminder.html", stud_intw_daily_data)
+    message = render_report("templates/intw_daily_reminder.html", stud_intw_daily_data)
     send_email(user.email, subject = "Daily Upcoming Interview Scheduled Reminder", message=message)
   return "Delivery is sent to user"

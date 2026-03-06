@@ -95,7 +95,8 @@ export default {
           </table>
         </div>
       </div>
-      <div v-if="selectedComp" class="card mt-4 shadow-sm border-0">
+      <p v-if="companies.length === 0" class="text-center test muted">No Pending Companies are present</p>
+      <div v-if ="selectedComp" class="card mt-4 shadow-sm border-0">
         <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">Company Details</div>
         <div class="card-body">
           <p><strong>ID: </strong>{{ selectedComp.c_id }}</p>

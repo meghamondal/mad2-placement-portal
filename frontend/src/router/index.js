@@ -24,6 +24,7 @@ const router = createRouter({
     {path: '/student/app_list', component: () => import("@/pages/StudAppStatus.vue") },
     {path: '/intw_details', component: () => import("@/pages/StudIntwDetails.vue") },
     {path: '/offer_letter', component: () => import("@/pages/StudOfferLetter.vue") },
+    {path: '/admin/summary', component: () => import("@/pages/AdminSummary.vue") },
 
   ],
 });

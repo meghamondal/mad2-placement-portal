@@ -277,7 +277,7 @@ export default {
                 <td>{{  id+1  }}</td>
                 <td>{{ student.stud_id  }}</td>
                 <td>{{ student.f_name }} {{ student.l_name  }}</td>
-                <td class="text-center">
+                <td class="button-group text-center">
                   <button class="btn btn-primary" @click="viewStud(student.stud_id)">View</button>
                   <button class="btn btn-danger" @click="deleteStud(student.stud_id)">Delete</button>
                 </td>
@@ -291,12 +291,14 @@ export default {
         <div class="card-body">
           <p><strong>ID: </strong>{{ selectedStud.stud_id }}</p>
           <p><strong>Name: </strong>{{ selectedStud.f_name }} {{ selectedStud.l_name }}</p>
-          <p><strong>Date of Birth: </strong>{{ selectedStud.dob }}</p>
+          <p><strong>Date of Birth: </strong>{{ new Date(selectedStud.dob).toDateString() }}</p>
           <p><strong>Graduation Year: </strong>{{ selectedStud.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ selectedStud.cgpa }}</p>
-          <a :href="`http://127.0.0.1:5000/${selectedStud.resume_file}`" target="_blank">View Resume</a>
-          <button :class="selectedStud.active ? 'btn btn-danger' : 'btn btn-success'" @click="stud_a_edit(selectedStud.stud_id)">{{ selectedStud.active ? "Deactivate" : "Activate" }}</button>
-          <button @click="cancel" class="btn btn-secondary">Cancel</button>
+          <td class="button-group">
+            <a :href="`http://127.0.0.1:5000/${selectedStud.resume_file}`" target="_blank">View Resume</a>
+            <button :class="selectedStud.active ? 'btn btn-danger' : 'btn btn-success'" @click="stud_a_edit(selectedStud.stud_id)">{{ selectedStud.active ? "Deactivate" : "Activate" }}</button>
+            <button @click="cancel" class="btn btn-secondary">Cancel</button>
+          </td>
         </div>
       </div>
     </div>
@@ -329,7 +331,7 @@ export default {
                 <td>{{company.c_id  }}</td>
                 <td>{{ company.c_name }}</td>
                 <td>{{ company.approval_status }}</td>
-                <td class="text-center">
+                <td class="button-group text-center">
                   <button class="btn btn-primary" @click="viewComp(company.c_id)">View</button>
                   <button class="btn btn-danger" @click="deleteComp(company.c_id)">Delete</button>
                 </td>
@@ -347,8 +349,10 @@ export default {
           <p><strong>Website: </strong>{{ selectedComp.website }}</p>
           <p><strong>Industry: </strong>{{ selectedComp.industry }}</p>
           <p><strong>Approval Status: </strong>{{ selectedComp.approval_status }}</p>
-          <button :class="selectedComp.active ? 'btn btn-danger' : 'btn btn-success'" @click="comp_a_edit(selectedComp.c_id)">{{ selectedComp.active ? "Deactivate" : "Activate" }}</button>
-          <button @click="cancel" class="btn btn-secondary">Cancel</button>
+          <td class="button-group">
+            <button :class="selectedComp.active ? 'btn btn-danger' : 'btn btn-success'" @click="comp_a_edit(selectedComp.c_id)">{{ selectedComp.active ? "Deactivate" : "Activate" }}</button>
+            <button @click="cancel" class="btn btn-secondary">Cancel</button>
+          </td>
         </div>
       </div>
     </div>
@@ -401,7 +405,8 @@ export default {
           <p><strong>Eligible Branch: </strong>{{ selectedPd.eligible_branch }}</p>
           <p><strong>Min Cgpa: </strong>{{ selectedPd.min_cgpa }}</p>
           <p><strong>Eligible Year: </strong>{{ selectedPd.eligible_year }}</p>
-          <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p>
+          <!-- <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p> -->
+          <p><strong>Application Deadline: </strong>{{ new Date(selectedPd.application_deadline).toLocaleDateString() }}</p>
           <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p>
           <button @click="cancel" class="btn btn-secondary">Cancel</button>
         </div>
@@ -447,3 +452,10 @@ export default {
     </div>
   </div> 
 </template>
+
+<style scoped>
+.button-group button{
+  margin: 0 0.5rem;
+
+}
+</style>

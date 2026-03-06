@@ -147,7 +147,8 @@ export default {
         <div class="card-body">
           <p><strong>Pd ID: </strong>{{ selectedPd.pd_id }}</p>
           <p><strong>Company ID: </strong>{{ selectedPd.c_id}}</p>
-          <p><strong>Company Name: </strong>{{ selectedPd.job_title }}</p>
+          <p><strong>Company Name: </strong>{{ selectedPd.company_details.c_name }}</p>
+          <p><strong>Job Role: </strong>{{ selectedPd.job_title }}</p>
           <p><strong>Job Description: </strong>{{ selectedPd.job_description }}</p>
           <p><strong>Eligible Branch: </strong>{{ selectedPd.eligible_branch }}</p>
           <p><strong>Min Cgpa: </strong>{{ selectedPd.min_cgpa }}</p>

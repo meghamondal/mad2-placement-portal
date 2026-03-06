@@ -106,6 +106,7 @@ export default {
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="card shadow p-4" style="width: 380px;">
       <h4 class="text-center mb-4">Sign Up</h4>
+    <p v-if="errorMsg" class="text-danger">{{ errorMsg }}</p>
     <form @submit.prevent="studReg">
       <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Email: </label>

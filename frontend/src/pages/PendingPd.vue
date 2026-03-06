@@ -63,7 +63,8 @@ export default {
       <div class="card-header bg-light text-black">
         <h4 class="mb-0">Pending Placement drives...</h4>
         <div class="card-body">
-          <table class="table table-hover table-striped align-middle">
+          <p v-if="p_drives.length === 0" class="text-center text-muted">No pending placementdrives are present... </p>
+          <table v-else class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
               <tr>
                 <th>S. No</th>
@@ -72,7 +73,7 @@ export default {
               <th>Company Name</th>
               <th>Job Title</th>
               <th class="text-center">Status</th>
-              <th>Actions</th>
+              <th class="text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
