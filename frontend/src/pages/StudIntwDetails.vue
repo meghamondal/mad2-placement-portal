@@ -23,7 +23,7 @@ export default{
         this.selectedApp = data.find(item => String(item.app_id) === String(app_id));
       }
       catch (error) {
-        this.errorMsg = error.message;
+        this.errorMsg = error.response?.data?.message;
       }
     },
     viewOffer(app) {
@@ -46,7 +46,7 @@ export default{
           <p><strong>ApplicationID: </strong>{{ selectedApp.app_id }}</p>
           <p><strong>Job Title </strong>{{ selectedApp.pd_details.job_title }}</p>
           <p><strong>Company Name: </strong>{{ selectedApp.company_name }}</p>
-          <p><strong>Scheduled On: </strong>{{ selectedApp.intw_details[0].scheduled }}</p>
+          <p><strong>Scheduled On: </strong>{{ selectedApp.intw_details[0].scheduled.substring(0,16)+ ', '+selectedApp.intw_details[0].scheduled.substring(17,22) }}</p>
           <p><strong>Remarks: </strong>{{ selectedApp.intw_details[0].remarks }}</p>
           <p><strong>Status: </strong>{{ selectedApp.intw_details[0].intw_status }}</p>
           <button v-if="selectedApp.intw_details[0].intw_status === 'passed'" class = "btn btn-success" @click="viewOffer(selectedApp)">View Offer Letter</button>
@@ -55,3 +55,9 @@ export default{
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>

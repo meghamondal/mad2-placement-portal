@@ -21,7 +21,7 @@ export default {
         this.companies = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the companies...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the companies...";
       }
     },
     async viewComp(c_id) {
@@ -32,7 +32,7 @@ export default {
         else{this.selectedComp = data;}
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the details...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the details...";
       }
     },
     async editStatus(company) {
@@ -45,7 +45,7 @@ export default {
         this.loadPCompanies()
       }
       catch (error) {
-        this.errorMsg = error.message || "Error in updation...";
+        this.errorMsg = error.response?.data?.message || "Error in updation...";
       }
     },
     cancel() {
@@ -116,5 +116,9 @@ export default {
 .button-group button{
   margin: 0 0.5rem;
 
+}
+
+body {
+  background-color: antiquewhite;
 }
 </style>

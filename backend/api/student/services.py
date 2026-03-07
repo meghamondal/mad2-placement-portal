@@ -3,7 +3,7 @@ from flask_security import current_user
 from datetime import datetime
 
 class ServiceError(Exception):
-  pass
+  "base error for service"
 
 class StudentService():
 

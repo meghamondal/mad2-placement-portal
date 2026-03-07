@@ -4,7 +4,8 @@ from datetime import datetime
 
 
 class ServiceError(Exception):
-  pass
+  "base error for service"
+
 
 class CompanyService():
 

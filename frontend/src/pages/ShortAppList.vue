@@ -20,7 +20,7 @@ export default {
         this.applications = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the applications...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the applications...";
       }
     },
     appIntw(app_id) {
@@ -37,7 +37,7 @@ export default {
         // this.loadSApp();
       }
       catch (error) {
-        this.errorMsg = error.message;
+        this.errorMsg = error.response?.data?.message || "Interview is not completed yet";
       }
     },
     async intw_fail(app_id) {
@@ -50,7 +50,7 @@ export default {
         // this.loadSApp();
       }
       catch (error) {
-        this.errorMsg = error.message;
+        this.errorMsg = error.response?.data?.message || "Interview is not completed yet";
       }
     }
   }
@@ -63,7 +63,9 @@ export default {
       <div class="card-header bg-light text-black">
         <h4 class="mb-0"> Shortlisted Applications...</h4>
         <div class="card-body">
-          <table class="table table-hover table-striped align-middle">
+          <p v-if="errorMsg" class="text-danger">{{ errorMsg }}</p>
+          <p v-if="applications.length === 0" class="text-center text-muted">No shortlisted application is present... </p>
+          <table v-else class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
               <tr>
                 <th>S. No</th>
@@ -101,5 +103,9 @@ export default {
 .button-group button{
   margin: 0 0.5rem;
 
+}
+
+body {
+  background-color: antiquewhite;
 }
 </style>

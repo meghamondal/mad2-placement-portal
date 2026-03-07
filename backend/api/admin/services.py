@@ -21,8 +21,7 @@ class AdminService():
       user_cred = User.query.filter_by(u_id = s.stud_id).first()
       s.active = user_cred.active
     if not stud:
-      # raise ServiceError("Student details does not exists...", 404)
-      return {"message": "Student details does not exists..."}, 404
+      raise ServiceError("Student details does not exists...", 404)
     return stud
   
   staticmethod
@@ -35,8 +34,7 @@ class AdminService():
     stud = Student.query.filter_by(stud_id = stud_id).first()
     user = User.query.get(stud.stud_id)
     if stud is None:
-      # raise ServiceError("Student details does not exists...", 404)
-      return {"message": "Student details does not exists..."},404
+      raise ServiceError("Student details does not exists...", 404)
     app = Application.query.filter_by(stud_id=stud_id).delete()
     if stud.resume_file:
       os.remove(stud.resume_file)
@@ -49,8 +47,7 @@ class AdminService():
   def edit_stud_active(stud_id):
     user = User.query.get(stud_id)
     if not user:
-      # raise ServiceError("User not found...", 404)
-      return {"message":"User not found..."}, 404
+      raise ServiceError("User not found...", 404)
     user.active = not user.active
     db.session.commit()
     return user
@@ -68,8 +65,7 @@ class AdminService():
       user_cred = User.query.filter_by(u_id = c.c_id).first()
       c.active = user_cred.active
     if not comp:
-      # raise ServiceError("Company details does not exists...", 404)
-      return {"message": "Company details does not exists..."}, 404
+      raise ServiceError("Company details does not exists...", 404)
     return comp
   
   @staticmethod
@@ -86,13 +82,10 @@ class AdminService():
   def edit_company_status(c_id, approval_status): 
     comp = Company.query.filter_by(c_id = c_id).first()
     if comp is None:
-      # raise ServiceError("Company does not exists...", 404)
-      return {"message": "Company does not exists..."}, 404
-    
+      raise ServiceError("Company does not exists...", 404)    
     status = ["pending", "approved", "rejected"]
     if approval_status not in status:
-      # raise ServiceError("Invalid Status", 400)
-      return {"message": "Invalid Status"}, 400
+      raise ServiceError("Invalid Status", 400)
     
     comp.approval_status = approval_status
     user = User.query.get(c_id)
@@ -121,13 +114,11 @@ class AdminService():
   def edit_comp_active(c_id):
     user = User.query.get(c_id)
     if not user:
-      # raise ServiceError("User not found...", 404)
-      return {"message":"User not found..."}, 404
+      raise ServiceError("User not found...", 404)
     user.active = not user.active
     comp = Company.query.get(c_id)
     if not comp:
-      # raise ServiceError("Company not found...", 404)
-      return {"message":"company not found..."}, 404
+      raise ServiceError("Company not found...", 404)
     if user.active is False:
       comp.approval_status = "blocked"
     elif user.active:
@@ -150,26 +141,22 @@ class AdminService():
   def pd_details(pd_id):
     pd = Placement_drive.query.filter_by(pd_id = pd_id).all()
     if not pd:
-      # raise ServiceError("Placement Drive details does not exists...", 404)
-      return {"message": "Placement Drive details does not exists..."}, 404
+      raise ServiceError("Placement Drive details does not exists...", 404)
     return pd 
   
   @staticmethod
   def edit_pd_status(pd_id, pd_status): 
     pd = Placement_drive.query.filter_by(pd_id = pd_id).first()
     if pd is None:
-      # raise ServiceError("Placement Drive does not exists...", 404)
-      return {"message": "Placement Drive does not exists..."}, 404
+      raise ServiceError("Placement Drive does not exists...", 404)
     
     status = ["pending", "approved", "rejected"]
     if pd_status not in status:
-      # raise ServiceError("Invalid Status", 400)
-      return {"message": "Invalid Status"}, 400
+      raise ServiceError("Invalid Status", 400)
     
     comp = Company.query.get(pd.c_id)
     if not comp:
-      # raise ServiceError("Company related to this placement drive is not found...", 404)
-      return {"message": "Company related to this placement drive is not found..."}, 400
+      raise ServiceError("Company related to this placement drive is not found...", 404)
     
     pd.pd_status = pd_status
     

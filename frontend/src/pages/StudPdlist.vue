@@ -40,7 +40,7 @@ export default {
         this.p_drives = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the placement drives...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the placement drives...";
       }
     },
     async loadApp() {
@@ -51,7 +51,7 @@ export default {
         this.applications = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the applications...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the applications...";
       }
     },
     
@@ -64,7 +64,7 @@ export default {
 
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the details...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the details...";
       }
     },
     async studAppply(pd_id) {
@@ -76,7 +76,7 @@ export default {
         this.loadApp();
       }
       catch (error) {
-        this.errorMsg = error.message;
+        this.errorMsg = error.response?.data?.message;
       }
     },
     cancel() {
@@ -93,12 +93,6 @@ export default {
       return today > appDate
     }
   },
-  // computed: {
-  //   applied_pds() {
-  //     return this.applications.map(application => application.pd_id
-  //     )
-  //   }
-  // }
 
 }
 </script>
@@ -169,5 +163,9 @@ export default {
 .button-group button{
   margin: 0 0.5rem;
 
+}
+
+body {
+  background-color: antiquewhite;
 }
 </style>

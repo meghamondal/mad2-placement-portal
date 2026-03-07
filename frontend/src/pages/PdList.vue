@@ -40,7 +40,7 @@ export default {
         
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the placement derives...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the placement derives...";
       }
     },
     async viewPd(pd_id) {
@@ -51,7 +51,7 @@ export default {
         else{this.selectedPd = data;}
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the details...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the details...";
       }
     },
     editPd(pd) {
@@ -80,7 +80,7 @@ export default {
         this.pdEdit = null;
       }
       catch (error) {
-        this.errorMsg = error.message || "Error in updation..." 
+        this.errorMsg = error.response?.data?.message || "Error in updation..." 
       }
     },
     appPd(pd_id) {
@@ -187,3 +187,9 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>

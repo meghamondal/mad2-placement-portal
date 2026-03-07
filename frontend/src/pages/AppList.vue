@@ -38,7 +38,8 @@ export default {
           return;
         }
         const data = await api.get(`/comp_api/comp_applist/${pd_id}`);
-        this.applications = data;
+        this.applications = data.map(app => ({...app, original_status: app.app_status}))
+        // this.applications = data;
       }
       catch (error) {
         this.errorMsg = error.message || "can't fetch the applications...";
@@ -84,7 +85,8 @@ export default {
           </form>
         </div>
         <div class="card-body">
-          <table class="table table-hover table-striped align-middle">
+          <p v-if="applications.length === 0" class="text-center text-muted">No application is present... </p>
+          <table v-else class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
               <tr>
                 <th>S. No</th>
@@ -108,14 +110,14 @@ export default {
                 <td>{{ app.app_status }}</td>
                 <td ><button class="btn btn-primary" @click="viewStud(app)">View</button></td>
                 <td class="text-center">
-                  <select v-if="app.app_status === 'applied'" class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status">
+                  <select v-if="app.original_status === 'applied'" class="form-select form-select-sm d-inline w-auto" aria-label="Default select example" v-model="app.app_status">
                     <option disabled value="">Change Status</option>
                     <option value="shortlisted">shortlisted</option>
                     <option value="rejected">rejected</option>
                   </select>
                 </td>
                 <td class="button-group">
-                  <button v-if="app.app_status === 'applied'" class="btn btn-success" @click="editStatus(app)">Update</button>
+                  <button v-if="app.original_status === 'applied'" class="btn btn-success" @click="editStatus(app)">Update</button>
                 </td>
               </tr>
             </tbody>
@@ -137,3 +139,9 @@ export default {
     </div>
   </div> 
 </template>
+
+<style scoped>
+body {
+  background-color: antiquewhite;
+}
+</style>

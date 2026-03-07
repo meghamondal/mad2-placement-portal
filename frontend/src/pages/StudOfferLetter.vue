@@ -20,7 +20,7 @@ export default{
         this.offer_letter = data.offer_letter;
       }
       catch (error) {
-        this.errorMsg = error.message
+        this.errorMsg = error.response?.data?.message || "Error in loading the offer letter";
       }
     }
   }
@@ -41,3 +41,9 @@ export default{
      </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>

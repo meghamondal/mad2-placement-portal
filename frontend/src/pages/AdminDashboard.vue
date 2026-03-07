@@ -458,4 +458,8 @@ export default {
   margin: 0 0.5rem;
 
 }
+
+body {
+  background-color: antiquewhite;
+}
 </style>

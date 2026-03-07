@@ -21,7 +21,7 @@ export default {
         this.p_drives = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the placement drives...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the placement drives...";
       }
     },
     async viewPd(pd_id) {
@@ -32,7 +32,7 @@ export default {
         else{this.selectedPd = data;}
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the details...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the details...";
       }
     },
     async editStatus(pd) {
@@ -45,7 +45,7 @@ export default {
         this.loadpPd()
       }
       catch (error) {
-        this.errorMsg = error.message || "Error in updation...";
+        this.errorMsg = error.response?.data?.message || "Error in updation...";
       }
     },
     cancel() {
@@ -123,5 +123,9 @@ export default {
 .button-group button{
   margin: 0 0.5rem;
 
+}
+
+body {
+  background-color: antiquewhite;
 }
 </style>

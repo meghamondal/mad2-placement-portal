@@ -33,7 +33,7 @@ export default{
         this.applications = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "can't fetch the applications...";
+        this.errorMsg = error.response?.data?.message || "can't fetch the applications...";
       }
     },
     Search() {
@@ -59,7 +59,8 @@ export default{
           </form>
         </div>
         <div class="card-body">
-          <table class="table table-hover table-striped align-middle">
+          <p v-if="applications.length === 0" class="text-center text-muted">No application is applied... </p>
+          <table v-else class="table table-hover table-striped align-middle">
             <thead class="table-ligh">
               <tr>
                 <th>S. No</th>
@@ -68,6 +69,7 @@ export default{
                 <!-- <th>Scheduled</th> -->
                 <th>Job Title</th>
                 <th>Application Status</th>
+                <th>Details</th>
               </tr>
             </thead>
             <tbody>
@@ -87,3 +89,9 @@ export default{
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>

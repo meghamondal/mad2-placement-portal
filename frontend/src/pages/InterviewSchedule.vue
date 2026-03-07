@@ -36,7 +36,7 @@ export default {
         this.$router.push("/short_app_list");
       }
       catch (error) {
-        this.errorMsg = error.message ;
+        this.errorMsg =  error.response?.data?.message || "Error in Interview scheduling..." ;
       }
     },
     cancel () {
@@ -55,6 +55,7 @@ export default {
       <div class="card-header bg-light text-black">
         <h4 class="mb-0"> Schedule Interview...</h4>
         <div class="card-body">
+          <p v-if="errorMsg" class="text-danger">{{ errorMsg }}</p>
           <form @submit.prevent="scheduleIntw">
             <div class="mb-3">
               <label for="scheduled" class="form-label">Interview Date & Time: </label>
@@ -74,3 +75,9 @@ export default {
     </div>
   </div>
 </template>
+
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>

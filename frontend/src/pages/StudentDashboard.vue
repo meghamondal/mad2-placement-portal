@@ -34,7 +34,7 @@ export default {
         this.student = data;
       }
       catch (error) {
-        this.errorMsg = error.message || "Student Details Not Found...";
+        this.errorMsg = error.response?.data?.message || "Student Details Not Found...";
       }
     },
     editStud(student) {
@@ -71,7 +71,7 @@ export default {
         this.studEdit = null;
       }
       catch (error) {
-        this.errorMsg = error.message;
+        this.errorMsg = this.errorMsg = error.response?.data?.message || "updation failed...";
       }
     },
     async csvStud(){
@@ -104,7 +104,7 @@ export default {
         <div class="card-body">
           <p><strong>ID: </strong>{{ student.stud_id }}</p>
           <p><strong>Name: </strong>{{ student.f_name }} {{ student.l_name }}</p>
-          <p><strong>Date of Birth: </strong>{{ new Date(student.dob).toDateString() }}</p>
+          <p><strong>Date of Birth: </strong>{{ new Date(student.dob).toLocaleDateString() }}</p>
           <p><strong>Graduation Year: </strong>{{ student.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ student.cgpa }}</p>
           <a :href="`http://127.0.0.1:5000/${student.resume_file}`" target="_blank">View Resume</a>
@@ -153,4 +153,8 @@ export default {
   </div>
 </template>
 
-
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>
