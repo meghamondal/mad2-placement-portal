@@ -132,8 +132,10 @@ export default {
           <p><strong>Date of Birth: </strong>{{ selectedApp.student_details.dob }}</p>
           <p><strong>Graduation Year: </strong>{{ selectedApp.student_details.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ selectedApp.student_details.cgpa }}</p>
-          <a :href="`http://127.0.0.1:5000/${selectedApp.student_details.resume_file}`" target="_blank">View Resume</a>
-          <button @click="cancel" class="btn btn-secondary">Cancel</button>
+          <div class="button-group">
+            <a :href="`http://127.0.0.1:5000/${selectedApp.student_details.resume_file}`" target="_blank">View Resume</a>
+            <button @click="cancel" class="btn btn-secondary">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -144,4 +146,10 @@ export default {
 body {
   background-color: antiquewhite;
 }
+
+.button-group button{
+  margin: 0 0.5rem;
+
+}
+
 </style>

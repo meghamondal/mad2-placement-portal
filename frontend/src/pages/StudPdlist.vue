@@ -128,9 +128,7 @@ export default {
                 <td>{{ pd.c_id  }}</td>
                 <td>{{ pd.company_details.c_name  }}</td>
                 <td>{{ pd.job_title }}</td>
-                <td class="button-group">
-                  <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View Details</button>
-                </td>
+                <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View Details</button>
               </tr>
             </tbody>
           </table>
@@ -149,10 +147,12 @@ export default {
           <p><strong>Eligible Year: </strong>{{ selectedPd.eligible_year }}</p>
           <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p>
           <!-- <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p> -->
-          <button @click="cancel" class="btn btn-secondary">Cancel</button>
-          <button v-if="checkDeadline(selectedPd.application_deadline)" class="btn btn-danger" disabled>Closed</button>
-          <button v-else-if="!checkApplied(selectedPd)" class="btn btn-success" @click="studAppply(selectedPd.pd_id)">Apply</button>
-          <button v-else class="btn btn-secondary" disabled>Applied</button>
+          <div class="button-group">
+            <button @click="cancel" class="btn btn-secondary">Cancel</button>
+            <button v-if="checkDeadline(selectedPd.application_deadline)" class="btn btn-danger" disabled>Closed</button>
+            <button v-else-if="!checkApplied(selectedPd)" class="btn btn-success" @click="studAppply(selectedPd.pd_id)">Apply</button>
+            <button v-else class="btn btn-secondary" disabled>Applied</button>
+          </div>
         </div>
       </div>
     </div>

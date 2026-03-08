@@ -126,7 +126,7 @@ export default {
                 <td>{{ pd.c_id  }}</td>
                 <td>{{ pd.company_details.c_name  }}</td>
                 <td>{{ pd.job_title }}</td>
-                <td class="text-center">
+                <td class="d-flex gap-2">
                   <button class="btn btn-primary" @click="viewPd(pd.pd_id)">View</button>
                   <button class="btn btn-warning" @click="editPd(pd)">Edit</button>
                   <button class="btn btn-info" @click="appPd(pd.pd_id)">Applications</button>
@@ -180,7 +180,7 @@ export default {
         <label for="application_deadline" class="form-label">Application Deadline: </label>
         <input type="datetime-local" class="form-control" aria-describedby="application_deadline" v-model="pdEdit.application_deadline">
       </div>
-      <div class="mb-3 center">
+      <div class="d-flex gap-2">
         <button @click="saveEdit" type="submit" class="btn btn-primary">Save</button>
         <button @click="cancel" class="btn btn-secondary">Cancel</button>
       </div>

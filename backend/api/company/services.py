@@ -1,4 +1,4 @@
-from models import Company, Placement_drive, Application, Student, Interview, db
+from models import Company, Placement_drive, Application, Student, Interview, db, User
 from sqlalchemy import or_
 from datetime import datetime
 
@@ -153,6 +153,12 @@ class CompanyService():
       raise ServiceError("Application is not shortlisted by the company...", 403)
     if app.app_status == "rejected":
       raise ServiceError("application is  rejected by the company...", 403)
+    stud = Student.query.get(app.stud_id)
+    if stud is None:
+      raise ServiceError("Student is deleted by the admin", 404)
+    user = User.query.get(stud.stud_id)
+    if not user.active:
+      raise ServiceError("Student account is deactivated by the admin", 403)
     
     intw = Interview(
       app_id = app_id,

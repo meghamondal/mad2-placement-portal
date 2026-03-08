@@ -81,19 +81,19 @@ def task():
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
   sender.add_periodic_task(
-    # crontab(hour=10, minute=31, day_of_week="*"),
+    # crontab(hour=10, minute=31, day_of_month=1),
     crontab(minute='*/2'),
     monthly_report.s(),
     )
   
   sender.add_periodic_task(
-    # crontab(hour=10, minute=31, day_of_week="*"),
+    # crontab(hour=10, minute=31, day_of_month=1),
     crontab(minute='*/2'),
     comp_monthly_report.s(),
     )
   
   sender.add_periodic_task(
-    # crontab(hour=10, minute=30),
+    # crontab(hour=10, minute=30, day_of_week="*"),
     crontab(minute='*/2'),
     daily_remainder.s(),
     )

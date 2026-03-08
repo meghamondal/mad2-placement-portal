@@ -14,16 +14,25 @@ export default {
 </script>
 
 <template>
+  <div id="div" class="container-full">
   <Navbar />
-  <div class="router-view-container">
+  <div class="rv-container">
   <router-view />
   </div>
   <Footer />
+  </div>
 </template>
 
 <style scoped>
-.router-view-container{
-  min-height: 89vh;
+.container-full {
+  min-height: 100vh;
+  background-color: antiquewhite;
 
 }
+.rv-container{
+  min-height: 85vh;
+
+}
+
+
 </style>

@@ -20,7 +20,10 @@ export default {
       application_deadline: "",
       pd_status: "pending",
       isCreating: false,
-      errorMsg: ""
+      errorMsg: "",
+      pending_tasks: false,
+      task_status: null,
+      tasks: []
     }
   },
   created() {
@@ -53,7 +56,6 @@ export default {
       }
     },
     editComp(company) {
-      // this.selectedComp = null;
       this.compEdit = { ...company };
       this.isEditing = true;
     },
@@ -113,18 +115,41 @@ export default {
         this.isCreating = false;
       }
       catch (error) {
-        this.errorMsg = error.message || "Placement Drive creation failed...";
+        this.errorMsg = error.response?.data?.message || "Placement Drive creation failed...";
       }
     },
-    async csvComp(){
+    
+    async csvCompTaskStart(){
       try {
         const response = await api.post(`/comp_api/compexport_csv/${this.company.c_id}`);
-        window.location.href = `http://127.0.0.1:5000/comp_api/compexport_status/${response.task_id}`;
+        this.tasks.push(response.task_id);
+        this.task_status = "Task Started";
+
+        let interval = setInterval(async () => {
+          const result = await api.get(`/comp_api/compexport_status_check/${response.task_id}`)
+          if (result.status == "completed"){
+            this.task_status = "Download Report";
+            clearInterval(interval);
+          }
+        }, 5000)
+
       }
       catch (error) {
         alert("Export Failed!")
       }
     },
+    async csvCompDownload(){
+      try {
+        
+        window.location.href = `http://127.0.0.1:5000/comp_api/compexport_status/${this.tasks.pop()}`;
+        this.task_status = null
+
+      }
+      catch (error) {
+        alert("Export Failed!")
+      }
+    },
+
     cancel() {
       this.compEdit = false;
       this.isEditing = false;
@@ -186,8 +211,11 @@ export default {
           <p><strong>Industry: </strong>{{ company.industry }}</p>
           <p><strong>Approval Status: </strong>{{ company.approval_status }}</p>
           <div class="card mt-4 shadow-sm border-0">
-            <button class="btn btn-secondary" @click="csvComp">Download CSV</button>
-          </div>        
+            <button class="btn btn-secondary" @click="csvCompTaskStart">Generate Report</button>
+          </div>
+          <div v-if="task_status" class="card mt-4 shadow-sm border-0">
+            <button class="btn btn-success" @click="csvCompDownload">{{ task_status }}</button>
+          </div>              
         </div>
       </div>
       <div v-if="isEditing" class="card mt-4 shadow-sm border-0">
@@ -209,7 +237,7 @@ export default {
             <label for="industry" class="form-label">Industry: </label>
             <input type="text" class="form-control" aria-describedby="industry" v-model="compEdit.industry">
            </div>
-           <div class="mb-3 center">
+           <div class="button-group">
             <button @click="saveEdit" type="submit" class="btn btn-primary">Save</button>
             <button @click="cancel" class="btn btn-secondary">Cancel</button>
           </div>
@@ -259,8 +287,13 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 body {
   background-color: antiquewhite;
+}
+
+.button-group button{
+  margin: 0 0.5rem;
+
 }
 </style>

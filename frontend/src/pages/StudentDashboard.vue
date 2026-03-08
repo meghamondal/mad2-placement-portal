@@ -7,7 +7,10 @@ export default {
     return {
       student: null,
       studEdit: null,
-      isEditing: false
+      isEditing: false,
+      pending_tasks: false,
+      task_status: null,
+      tasks: []
     }
   },
   created() {
@@ -74,10 +77,31 @@ export default {
         this.errorMsg = this.errorMsg = error.response?.data?.message || "updation failed...";
       }
     },
-    async csvStud(){
+    async csvStudTaskStart(){
       try {
         const response = await api.post(`/api/export_csv/${this.student.stud_id}`);
-        window.location.href = `http://127.0.0.1:5000/api/export_status/${response.task_id}`;
+        this.tasks.push(response.task_id);
+        this.task_status = "Task Started";
+
+        let interval = setInterval(async () => {
+          const result = await api.get(`/api/export_status_check/${response.task_id}`)
+          if (result.status == "completed"){
+            this.task_status = "Download Report";
+            clearInterval(interval);
+          }
+        }, 5000)
+
+      }
+      catch (error) {
+        alert("Export Failed!")
+      }
+    },
+    async csvStudDownload(){
+      try {
+        
+        window.location.href = `http://127.0.0.1:5000/api/export_status/${this.tasks.pop()}`;
+        this.task_status = null
+
       }
       catch (error) {
         alert("Export Failed!")
@@ -109,7 +133,10 @@ export default {
           <p><strong>CGPA: </strong>{{ student.cgpa }}</p>
           <a :href="`http://127.0.0.1:5000/${student.resume_file}`" target="_blank">View Resume</a>
           <div class="card mt-4 shadow-sm border-0">
-            <button class="btn btn-secondary" @click="csvStud">Download CSV</button>
+            <button class="btn btn-secondary" @click="csvStudTaskStart">Generate Report</button>
+          </div>
+          <div v-if="task_status" class="card mt-4 shadow-sm border-0">
+            <button class="btn btn-success" @click="csvStudDownload">{{ task_status }}</button>
           </div>        
         </div>
       </div>
@@ -143,7 +170,7 @@ export default {
               <a :href="studEdit.resume_file" target="_blank" class="text-primary"></a>
             </div>
           </div>
-          <div class="mb-3 center">
+          <div class="d-flex gap-2">
             <button @click="saveEdit" type="submit" class="btn btn-primary">Save</button>
             <button @click="cancel" class="btn btn-secondary">Cancel</button>
           </div>

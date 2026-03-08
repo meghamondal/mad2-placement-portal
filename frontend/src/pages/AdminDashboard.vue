@@ -294,11 +294,11 @@ export default {
           <p><strong>Date of Birth: </strong>{{ new Date(selectedStud.dob).toDateString() }}</p>
           <p><strong>Graduation Year: </strong>{{ selectedStud.graduation_year }}</p>
           <p><strong>CGPA: </strong>{{ selectedStud.cgpa }}</p>
-          <td class="button-group">
+          <div class="button-group">
             <a :href="`http://127.0.0.1:5000/${selectedStud.resume_file}`" target="_blank">View Resume</a>
             <button :class="selectedStud.active ? 'btn btn-danger' : 'btn btn-success'" @click="stud_a_edit(selectedStud.stud_id)">{{ selectedStud.active ? "Deactivate" : "Activate" }}</button>
             <button @click="cancel" class="btn btn-secondary">Cancel</button>
-          </td>
+          </div>
         </div>
       </div>
     </div>
@@ -349,10 +349,10 @@ export default {
           <p><strong>Website: </strong>{{ selectedComp.website }}</p>
           <p><strong>Industry: </strong>{{ selectedComp.industry }}</p>
           <p><strong>Approval Status: </strong>{{ selectedComp.approval_status }}</p>
-          <td class="button-group">
+          <div class="button-group">
             <button :class="selectedComp.active ? 'btn btn-danger' : 'btn btn-success'" @click="comp_a_edit(selectedComp.c_id)">{{ selectedComp.active ? "Deactivate" : "Activate" }}</button>
             <button @click="cancel" class="btn btn-secondary">Cancel</button>
-          </td>
+          </div>
         </div>
       </div>
     </div>

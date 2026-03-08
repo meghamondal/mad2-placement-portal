@@ -1,0 +1,714 @@
+openapi: 3.0.0
+info:
+  title: Placement Portal App api
+  version: 1.0.0
+  description: API documentation for Placement Portal Application
+
+servers:
+  - url: http://127.0.0.1:5000
+  
+paths:
+  /api/auth/login:
+    description: End point for login
+    post:
+      description: Authenticates a user with email and password.
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: "ram@example.com"
+                  password:
+                    type: string
+                    example: "ram@1"
+      responses:
+        '200':
+          description: Login Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User logged in successfully."
+        '400':
+          description: Invalid Credentials provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Check your credentials..."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+  /api/company/register:
+    description: End point for company registration
+    post:
+      description: Registration
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: "hyper@example.com"
+                  password:
+                    type: string
+                    example: "hyper@1"
+                  c_name:
+                    type: string
+                    example: "Hyper"
+                  hr_contact:
+                    type: string
+                    example: "hr@hyper.com"
+                  website:
+                    type: string
+                    example: "wwww.hyper.com"
+                  industry:
+                    type: string
+                    example: "AI & Technology"
+      responses:
+        '400':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Email already exists."
+          '201':
+            description: Registration Successful
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Registration successfully."
+          '500':
+            description: Internal Server Error
+  /api/student/register:
+    description: End point for student registration
+    post:
+      description: Registration
+      requestBody:
+          required: true
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: "ram@example.com"
+                  password:
+                    type: string
+                    example: "ram@1"
+                  f_name:
+                    type: string
+                    example: "Ram"
+                  l_name:
+                    type: string
+                    example: "Kumar"
+                  dob:
+                    type: string
+                    format: date
+                    example: "2000-07-27"
+                  graduation_year:
+                    type: integer
+                    example: "2026"
+                  cgpa:
+                    type: number
+                    format: float
+                    example: 7.00
+                  resume_file:
+                    type: string
+                    format: binary
+      responses:
+        '400':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Email already exists."
+          '201':
+            description: Registration Successful
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      example: "Registration successfully."
+          '500':
+            description: Internal Server Error       
+  /admin_api/counts:
+    get:
+      description: Get the total number of students, company, placement drives
+      responses:
+      '200':
+        description: Request successful
+  /admin_api/stud_details/<int:stud_id>:
+    get:
+      description: Get the student details  
+      parameters:
+        - in: path
+          name: stud_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Student  details fetched successfully
+        '404':
+          description: Student not found
+        '500':
+          description: Internal Server Error
+  /admin_api/stud_details/<int:stud_id>:
+    delete:
+      description: Delete the student and related records
+      parameters:
+        - in: path
+          name: stud_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Student deleted successfully
+        '404':
+          description: Student not found
+        '500':
+          description: Internal Server Error
+  /admin_api/stud_edit/<int:stud_id>:
+    patch:
+      description: Activate or Deactivate a student account
+      parameters:
+        - in: path
+          name: stud_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Student status updated successfully
+        '404':
+          description: Student not found
+        '500':
+          description: Internal Server 
+  /admin_api/stud_list:
+    get:
+      description: Endpoint to get the list of all the students
+      responses:
+        '200':
+          description: List of all the students
+        '500':
+          description: Internal Server Error
+  Similar Types of APIs are present for:
+  - Companies
+  - Placement drives
+  - Applications
+
+  /comp_api/comp_details:
+    get:
+      description: Endpoint to get company details
+      responses:
+        '200':
+          description: Request Successful
+        '500':
+          description: Internal Server Error
+    patch:
+      description: Endpoint to edit company details
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: "hyper@example.com"
+                  password:
+                    type: string
+                    example: "hyper@1"
+                  c_name:
+                    type: string
+                    example: "Hyper"
+                  hr_contact:
+                    type: string
+                    example: "hr@hyper.com"
+                  website:
+                    type: string
+                    example: "wwww.hyper.com"
+                  industry:
+                    type: string
+                    example: "AI & Technology"
+      responses:
+        '200':
+          description: Company details edited successfully
+        '404':
+          description: Company not found
+        '500':
+          description: Internal Server Error
+  /comp_api/comp_pdcreate:
+    post:
+      description: Endpoint for creating new placement drives
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_title:
+                    type: string
+                    example: "Mnager"
+                  job_description:
+                    type: string
+                    example: "You have to manage different things"
+                  eligible_branch:
+                    type: string
+                    example: "AI, CSE"
+                  min_cgpa:
+                    type: float
+                    example: 6.00
+                  eligible_year:
+                    type: integer
+                    example: 2027
+                  application_deadline:
+                    type: string
+                    format: date
+                    example: "2026-03-27"
+                  pd_status:
+                    type: string
+                    enum: [pending, approved, rejected]
+                    example: "pending"
+      responses:
+        '201':
+          description: Placement Drive created 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Placement Drive created successfully"
+        '500':
+          description: Internal Server Error
+  /comp_api/comp_pdedit/<int:pd_id>:
+    patch:
+      description: Endpoint to edit company details
+      parameters:
+      - in: path
+        name: pd_id
+        required: true
+        schema:
+          type: integer
+          example: 2
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_title:
+                    type: string
+                    example: "Mnager"
+                  job_description:
+                    type: string
+                    example: "You have to manage different things"
+                  eligible_branch:
+                    type: string
+                    example: "AI, CSE"
+                  min_cgpa:
+                    type: float
+                    example: 6.00
+                  eligible_year:
+                    type: integer
+                    example: 2027
+                  application_deadline:
+                    type: string
+                    format: date
+                    example: "2026-03-27"
+                  pd_status:
+                    type: string
+                    enum: [pending, approved, rejected]
+                    example: "pending"
+      responses:
+      '200':
+        description: "Successfully updated"
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Subject updated"
+                pd_id:
+                  type: integer
+                  example: 2
+                job_title:
+                  type: string
+                  example: "Data Scientist"
+                job_description:
+                  type: string
+                  example: "Data analysis, modeling, visualization, and problem-solving."
+      '500':
+        description: Internal Server Error
+  /comp_api/comp_pdlist:
+    get:
+      description: Endpoint to get the list of all the placement drive
+      responses:
+        '200':
+          description: List of all the placement drive
+        '500':
+          description: Internal Server Error
+  /comp_api/comp_pd_details/<int:pd_id>:
+    get:
+      description: Get the Placement Drive details  
+      parameters:
+        - in: path
+          name: pd_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Placement Drive  details fetched successfully
+        '404':
+          description: Placement Drive not found
+        '500':
+          description: Internal Server Error
+  /comp_api/comp_applist/<int:pd_id>:
+    get:
+      description: Get Applications as per pd_id details  
+      parameters:
+        - in: path
+          name: pd_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: List of all the Applications as per the pd_id
+        '404':
+          description: Placement Drive not found
+        '500':
+          description: Internal Server Error
+  /comp_api/comp_editastatus/<int:app_id>:
+    patch:
+    description: Company can edit the status of application
+    parameters:
+      - in: path
+        name: app_id
+        required: true
+        schema:
+          type: integer
+          example: 2
+    requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - applied
+                  - shortlisted
+                  - selected
+                  - rejected
+                example: shortlisted
+    responses:
+        '200':
+          description: Application status updated successfully
+        '400':
+          description: Invalid status 
+        '500':
+          description: Internal Server Error
+  /comp_api/comp_counts:
+    get:
+      description: Get the total number of companies
+      responses:
+      '200':
+        description: Request successful
+      '500':
+          description: Internal Server Error
+  /comp_api/short_app_list:
+    get:
+      description: Endpoint for getting the list of shortlisted Applications
+      responses:
+        '200':
+          description: List of all the shortlisted Applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    app_id:
+                      type: integer
+                    pd_id:
+                      type: integer
+                    stud_id:
+                      type: integer
+                    app_date:
+                      type: string
+                      format: date
+                    app_status:
+                      type: string
+                      enum:
+                        - applied
+                        - shortlisted
+                        - interview scheduled
+                        - selected
+                        - rejected
+        '500':
+          description: Internal Server Error
+  /comp_api/intw_schedule/<int:app_id>:
+    post:
+      description: Endpoint for scheduling interview for shortlisted Applications
+      parameters:
+      - in: path
+        name: app_id
+        required: true
+        schema:
+          type: integer
+          example: 2
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scheduled:
+                    type: string
+                    format: date
+                    example: "2026-04-01 16:00:00"
+                  remarks:
+                    type: string
+                    example: "Best of luck"
+      responses:
+      '200':
+        description: Interview scheduled successfully
+      '500':
+          description: Internal Server Error
+  /comp_api/intw_pass/<int:app_id>:
+    patch:
+      description: Endpoint to edit the interview status as passed
+      parameters:
+      - in: path
+        name: app_id
+        required: true
+        schema:
+          type: integer
+          example: 2
+      responses:
+      '200':
+        description: Interview marked as passed
+      '400':
+        description: Interview is not scheduled or completed yet
+      '404':
+        description: Application or interview not found
+      '500':
+          description: Internal Server Error
+  /comp_api/intw_fail/<int:app_id>:
+    patch:
+      description: Endpoint to edit the interview status as failed
+      parameters:
+      - in: path
+        name: app_id
+        required: true
+        schema:
+          type: integer
+          example: 2
+      responses:
+      '200':
+        description: Interview marked as failed
+      '400':
+        description: Interview is not scheduled or completed yet
+      '404':
+        description: Application or interview not found
+      '500':
+          description: Internal Server Error 
+  /api//stud_details:
+    get:
+      description: Endpoint to get student details
+      responses:
+        '200':
+          description: Request successful
+        '500':
+          description: Internal Server Error
+    patch:
+      description: Endpoint to edit student details
+      requestBody:
+          required: true
+          content:
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: "ram@example.com"
+                  password:
+                    type: string
+                    example: "ram@1"
+                  f_name:
+                    type: string
+                    example: "Ram"
+                  l_name:
+                    type: string
+                    example: "Kumar"
+                  dob:
+                    type: string
+                    format: date
+                    example: "2000-07-27"
+                  graduation_year:
+                    type: integer
+                    example: "2026"
+                  cgpa:
+                    type: number
+                    format: float
+                    example: 7.00
+                  resume_file:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: Student details edited successfully
+        '404':
+          description: Student not found
+        '500':
+          description: Internal Server Error        
+  /api/stud_pdlist:
+    get:
+      description: Endpoint to get the list of all the placement drive
+      responses:
+        '200':
+          description: List of all the placement drive
+        '500':
+          description: Internal Server Error
+  /api/stud_pddetails/<int:pd_id>:
+    get:
+      description: Get the Placement Drive details  
+      parameters:
+        - in: path
+          name: pd_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Placement Drive  details fetched successfully
+        '404':
+          description: Placement Drive not found
+        '500':
+          description: Internal Server Error
+  /api/stud_apply/<int:pd_id>:
+    post:
+      description: Endpoint for the student to apply in a placement drive
+      parameters:
+        - in: path
+          name: pd_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Application submitted successfully
+        '404':
+          description: Placement Drive not found
+        '500':
+          description: Internal Server Error
+  /api/stud_apps:
+    get:
+      description: Endpoint for getting all the applications submitted by student
+      responses:
+        '200':
+          description: List of all the applied applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    app_id:
+                      type: integer
+                    pd_id:
+                      type: integer
+                    app_status:
+                      type: string
+                      enum:
+                        - applied
+                        - shortlisted
+                        - interview scheduled
+                        - selected
+                        - rejected
+        '500':
+          description: Internal Server Error
+  /api/stud_offer/<int:app_id>:
+    get:
+      description: Endpoint for generating the offer letter
+      parameters:
+        - in: path
+          name: app_id
+          required: true
+          schema:
+           type: integer
+           example: 2
+      responses:
+        '200':
+          description: Offer letter generated successfully
+        '404':
+          description: Application not found
+        '400':
+          description: Offer letter not available
+        '500':
+          description: Internal Server Error
+
+
+        
+
+  
+
+
+

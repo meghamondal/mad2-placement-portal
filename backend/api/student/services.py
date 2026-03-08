@@ -1,4 +1,4 @@
-from models import Student, Placement_drive, Application, db, User
+from models import Student, Placement_drive, Application, db, User, Company
 from flask_security import current_user
 from datetime import datetime
 
@@ -35,7 +35,8 @@ class StudentService():
   @staticmethod
   def get_placement_drives(stud_id):
     stud = Student.query.get(stud_id)
-    pdrives = Placement_drive.query.filter(Placement_drive.pd_status=="approved", Placement_drive.min_cgpa<=stud.cgpa).all()
+    pdrives = Placement_drive.query.filter(Placement_drive.pd_status=="approved", Placement_drive.min_cgpa<=stud.cgpa, Placement_drive.c_id.in_(
+      Company.query.filter(Company.approval_status == "approved").with_entities(Company.c_id))).all()
     print("db for student pd list ")
     return pdrives
   

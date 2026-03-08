@@ -110,7 +110,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 body {
   background-color: antiquewhite;
 }

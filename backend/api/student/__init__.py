@@ -5,7 +5,7 @@ stud_api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 stud_api = Api(stud_api_bp)
 
-from .resources import StudentResource, StudentpdListResource, StudentpdApplyResource, StudentAppHistoryResource, StudentpdResource, StudOfferLetterResource, StudExportResource, StudExportStatus
+from .resources import StudentResource, StudentpdListResource, StudentpdApplyResource, StudentAppHistoryResource, StudentpdResource, StudOfferLetterResource, StudExportResource, StudExportStatus, StudExportStatusCheck
 
 stud_api.add_resource(StudentResource, "/stud_details")
 stud_api.add_resource(StudentpdListResource, "/stud_pdlist")
@@ -15,4 +15,5 @@ stud_api.add_resource(StudentAppHistoryResource, "/stud_apps")
 stud_api.add_resource(StudOfferLetterResource, "/stud_offer/<int:app_id>")
 
 stud_api.add_resource(StudExportResource, "/export_csv/<int:stud_id>")
+stud_api.add_resource(StudExportStatusCheck, "/export_status_check/<string:task_id>")
 stud_api.add_resource(StudExportStatus, "/export_status/<string:task_id>")

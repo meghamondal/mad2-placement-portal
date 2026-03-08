@@ -35,7 +35,7 @@ class AdminService():
     user = User.query.get(stud.stud_id)
     if stud is None:
       raise ServiceError("Student details does not exists...", 404)
-    app = Application.query.filter_by(stud_id=stud_id).delete()
+    # app = Application.query.filter_by(stud_id=stud_id).delete()
     if stud.resume_file:
       os.remove(stud.resume_file)
     db.session.delete(stud)

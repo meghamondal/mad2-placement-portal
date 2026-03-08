@@ -236,6 +236,16 @@ class CompExportResource(Resource):
 from celery.result import AsyncResult
 from flask import send_from_directory, redirect
 
+class CompExportStatusCheck(Resource):
+  # @auth_required("token")
+  # @roles_required("company") 
+  def get(self, task_id):
+    res = AsyncResult(task_id)
+    if res.ready():
+      return {"status": "completed"}, 200
+    else:
+      return {"status": "pending"}, 200
+
 class CompExportStatus(Resource):
   # @auth_required("token")
   # @roles_required("company") 
