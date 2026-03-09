@@ -112,10 +112,6 @@ export default {
         <canvas ref="appstatus_chart" width="400" height="400"></canvas>
       </div>
     </div>
-    <!-- <div class="card">
-      <h6 class="card-subtitle mb-2 text-body-secondary">Placement Drive Status</h6>
-      <canvas ref="pd_chart" width="400" height="400"></canvas>
-    </div> -->
   </div>
 </template>
 

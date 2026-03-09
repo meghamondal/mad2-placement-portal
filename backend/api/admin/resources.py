@@ -138,7 +138,7 @@ class AdminCompEditResource(Resource):
   @marshal_with(company_fields)
   def patch(self, c_id):
     args = compstatus_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     comp_edit = AdminService.edit_company_status(c_id, args["approval_status"])
     cache.delete("get_acomplist")
     cache.delete("get_pcomplist")
@@ -175,7 +175,7 @@ class AdminpdEditResource(Resource):
   @marshal_with(pd_fields)
   def patch(self, pd_id):
     args = pdstatus_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     pd_edit = AdminService.edit_pd_status(pd_id, args["pd_status"])
     cache.delete("get_apdlist")
     cache.delete("get_ppdlist")
@@ -197,14 +197,6 @@ class AdminAppListResource(Resource):
   def get(self):
     return AdminService.get_app_list()
   
-
-# class Adminmailhog(Resource):
-#   def get(self):
-#     res = monthly_report.delay()
-#     return {
-#       "result": res.result
-#     }
-
   
     
   

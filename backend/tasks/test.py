@@ -3,7 +3,6 @@ import datetime
 from models import Application, Placement_drive, User, Company, Role, Student, Interview
 from render_utils import render_report
 from mail import send_email
-# from datetime import datetime, timedelta
 import csv
 
 @shared_task()

@@ -56,13 +56,10 @@ export default {
     },
     editPd(pd) {
       this.selectedPd = null;
-      // this.pdEdit = { ...pd };
       const newpd = { ...pd };
       if (newpd.application_deadline){
         newpd.application_deadline = new Date(newpd.application_deadline).toISOString().slice(0,16);
       }
-      // let app_date = new Date(this.pdEdit.application_deadline)
-      // this.pdEdit.application_deadline = app_date
       this.pdEdit = newpd
 
       this.isEditing = true;
@@ -71,7 +68,6 @@ export default {
       try {
         const payload = { ...this.pdEdit };
         if (payload.application_deadline){
-          // payload.application_deadline = new Date(payload.application_deadline).toISOString().split("T")[0];
           payload.application_deadline = payload.application_deadline.slice(0, 10);
         }
         await api.patch(`/comp_api/comp_pdedit/${payload.pd_id}`, payload);

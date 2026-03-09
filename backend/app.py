@@ -29,7 +29,7 @@ def create_app():
   from extensions import security, cache
 
   datastore = SQLAlchemyUserDatastore(db, User, Role)
-  security.init_app(app, datastore = datastore)#register_blueprint=False
+  security.init_app(app, datastore = datastore)
 
   app.datastore = datastore
 
@@ -55,22 +55,19 @@ def create_app():
   celery = celery_init_app(app)
   celery.autodiscover_tasks()
 
-  @app.route('/cache')
-  @cache.cached(timeout=1)
-  def cache():
-      print("function executed")
-      return {"date" : str(datetime.utcnow())}
+  # @app.route('/cache')
+  # @cache.cached(timeout=1)
+  # def cache():
+  #     print("function executed")
+  #     return {"date" : str(datetime.utcnow())}
 
-  
 
-  # for trail
   with app.app_context():
     db.create_all()
   return app, celery
 
 app, celery = create_app()
 
-# from datetime import time
 
 from tasks.test import add
 @app.route("/celery-tasks")
@@ -81,20 +78,20 @@ def task():
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
   sender.add_periodic_task(
-    # crontab(hour=10, minute=31, day_of_month=1),
-    crontab(minute='*/2'),
+    crontab(hour=10, minute=31, day_of_month=1),
+    # crontab(minute='*/2'),
     monthly_report.s(),
     )
   
   sender.add_periodic_task(
-    # crontab(hour=10, minute=31, day_of_month=1),
-    crontab(minute='*/2'),
+    crontab(hour=10, minute=31, day_of_month=1),
+    # crontab(minute='*/2'),
     comp_monthly_report.s(),
     )
   
   sender.add_periodic_task(
-    # crontab(hour=10, minute=30, day_of_week="*"),
-    crontab(minute='*/2'),
+    crontab(hour=10, minute=30, day_of_week="*"),
+    # crontab(minute='*/2'),
     daily_remainder.s(),
     )
 

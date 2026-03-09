@@ -41,7 +41,6 @@ export default {
       }
     },
     editStud(student) {
-      // this.selectedStud = null;
       this.studEdit = { ...student };
       if (this.studEdit.dob) {
         const n_date = new Date(this.studEdit.dob);
@@ -89,7 +88,7 @@ export default {
             this.task_status = "Download Report";
             clearInterval(interval);
           }
-        }, 5000)
+        }, 2000)
 
       }
       catch (error) {

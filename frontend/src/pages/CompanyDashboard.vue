@@ -131,7 +131,7 @@ export default {
             this.task_status = "Download Report";
             clearInterval(interval);
           }
-        }, 5000)
+        }, 2000)
 
       }
       catch (error) {

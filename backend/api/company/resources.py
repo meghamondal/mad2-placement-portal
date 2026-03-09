@@ -89,7 +89,7 @@ class CompanyResource(Resource):
   @marshal_with(company_fields)
   def patch(self):
     args = comp_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     comp_edit = CompanyService.edit_details(current_user.u_id, args)
     cache.delete("get_compdetails")
     return comp_edit
@@ -100,7 +100,7 @@ class CompanypdcreateResource(Resource):
   @marshal_with(pdrive_fields)
   def post(self):
     args = pd_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     comp_create = CompanyService.create_placement_drives(current_user.u_id, args)
     cache.delete("get_comppdlist")
     cache.delete("get_compcount")
@@ -112,7 +112,7 @@ class CompanypdEditResource(Resource):
   @marshal_with(pdrive_fields)
   def patch(self, pd_id):
     args = pd_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     pd_edit = CompanyService.edit_pddetails(current_user.u_id, pd_id, args)
     cache.delete("get_comppdlist")
     cache.delete_memoized(CompanypdResource.get, CompanypdResource, pd_id)
@@ -155,7 +155,7 @@ class CompanyAppEditResource(Resource):
   @marshal_with(app_fields)
   def patch(self, app_id):
     args = appstatus_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     app_edit = CompanyService.edit_applicants_status(app_id, args["app_status"])
     cache.delete_memoized(CompanyAppListResource.get, CompanyAppListResource, app_edit.pd_id)
     cache.delete("get_compapplist")
@@ -190,7 +190,7 @@ class CompanyScheduleIntwResource(Resource):
   @marshal_with(intw_fields)
   def post(self, app_id):
     args = intw_parser.parse_args()
-    args = dict(filter(lambda item: item[1] is not None, args.items()))# removes empty parser values (the one which is having None)
+    args = dict(filter(lambda item: item[1] is not None, args.items()))
     schedule_intw = CompanyService.schedule_interview(app_id, args)
     cache.delete_memoized(CompanyAppListResource.get, CompanyAppListResource, schedule_intw.application.pd_id)
     cache.delete("get_compcount")
@@ -224,8 +224,6 @@ from tasks.test import compcsv_report
 import time
 
 class CompExportResource(Resource):
-  # @auth_required("token")
-  # @roles_required("company")
   def post(self,c_id):
     result = compcsv_report.delay(c_id)
     return {
@@ -237,8 +235,6 @@ from celery.result import AsyncResult
 from flask import send_from_directory, redirect
 
 class CompExportStatusCheck(Resource):
-  # @auth_required("token")
-  # @roles_required("company") 
   def get(self, task_id):
     res = AsyncResult(task_id)
     if res.ready():
@@ -247,8 +243,6 @@ class CompExportStatusCheck(Resource):
       return {"status": "pending"}, 200
 
 class CompExportStatus(Resource):
-  # @auth_required("token")
-  # @roles_required("company") 
   def get(self, task_id):
     res = AsyncResult(task_id)
     while not res.ready():

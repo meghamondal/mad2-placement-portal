@@ -39,7 +39,6 @@ export default {
         }
         const data = await api.get(`/comp_api/comp_applist/${pd_id}`);
         this.applications = data.map(app => ({...app, original_status: app.app_status}))
-        // this.applications = data;
       }
       catch (error) {
         this.errorMsg = error.message || "can't fetch the applications...";

@@ -121,7 +121,6 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <!-- <tr v-for="(pd, id) in p_drives" :key="pd.pd_id"> -->
                 <tr v-for="(pd, id) in filteredP_drives" :key="pd.pd_id">
                 <td>{{  id+1  }}</td>
                 <td>{{ pd.pd_id  }}</td>
@@ -146,7 +145,6 @@ export default {
           <p><strong>Min Cgpa: </strong>{{ selectedPd.min_cgpa }}</p>
           <p><strong>Eligible Year: </strong>{{ selectedPd.eligible_year }}</p>
           <p><strong>Application Deadline: </strong>{{ selectedPd.application_deadline }}</p>
-          <!-- <p><strong>Pd Status: </strong>{{ selectedPd.pd_status }}</p> -->
           <div class="button-group">
             <button @click="cancel" class="btn btn-secondary">Cancel</button>
             <button v-if="checkDeadline(selectedPd.application_deadline)" class="btn btn-danger" disabled>Closed</button>

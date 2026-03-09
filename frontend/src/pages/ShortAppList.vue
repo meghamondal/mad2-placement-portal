@@ -34,7 +34,6 @@ export default {
         alert("Interview Status Marked as pass")
         this.applications = this.applications.filter(
         app => app.app_id !== app_id);
-        // this.loadSApp();
       }
       catch (error) {
         this.errorMsg = error.response?.data?.message || "Interview is not completed yet";
@@ -47,7 +46,6 @@ export default {
         alert("Interview Status Marked as fail")
         this.applications = this.applications.filter(
         app => app.app_id !== app_id);
-        // this.loadSApp();
       }
       catch (error) {
         this.errorMsg = error.response?.data?.message || "Interview is not completed yet";

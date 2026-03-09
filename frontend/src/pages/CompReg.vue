@@ -73,7 +73,7 @@ export default {
       <h4 class="text-center mb-4">Sign Up</h4>
     <form @submit.prevent="compReg">
       <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Email: </label>
+        <label for="email" class="form-label">Email: </label>
         <input type="email" class="form-control"  placeholder="name@example.com" v-model="email">
       </div>
       <div class="mb-3">

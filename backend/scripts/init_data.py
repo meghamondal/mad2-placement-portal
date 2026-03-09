@@ -29,7 +29,7 @@ with app.app_context():
   if User.query.filter_by(email = "rahul@example.com").first():
     stud_data = User.query.filter_by(email = "rahul@example.com").first()
     stud_dob = datetime(day=17, month=6, year=2001)
-    new_stud=Student(stud_id = stud_data.u_id, f_name = 'Rahul', l_name = 'Kumar', resume_file = "static/resumes/rahulexamplecom.pdf" , graduation_year = '2027', cgpa ='8.01', dob = stud_dob) #needs to changde the logic to make it url safe for resume file
+    new_stud=Student(stud_id = stud_data.u_id, f_name = 'Rahul', l_name = 'Kumar', resume_file = "static/resumes/rahulexample.com.pdf" , graduation_year = '2027', cgpa ='8.01', dob = stud_dob) #needs to changde the logic to make it url safe for resume file
     db.session.add(new_stud)
     db.session.commit()
 

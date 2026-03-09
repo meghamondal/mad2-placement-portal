@@ -66,7 +66,7 @@ export default{
                 <th>S. No</th>
                 <th>Application ID</th>
                 <th>Pd ID</th>
-                <!-- <th>Scheduled</th> -->
+                <th>Company Name</th>
                 <th>Job Title</th>
                 <th>Application Status</th>
                 <th>Details</th>
@@ -77,8 +77,8 @@ export default{
                 <td>{{  id+1  }}</td>
                 <td>{{ app.app_id  }}</td>
                 <td>{{ app.pd_id  }}</td>
-                <!-- <td>{{ app.intw_details[0].scheduled  }}</td> -->
-                <td>{{ app.pd_details.job_title  }}</td>
+                <td>{{ app.company_name  }}</td>
+                <td>{{ app.pd_details.job_title  }}</td> 
                 <td>{{ app.app_status }}</td>
                 <button v-if="app.app_status === 'interview scheduled' || app.app_status === 'selected'" class="btn btn-info" @click="viewIntw(app)">View Details</button>
               </tr>

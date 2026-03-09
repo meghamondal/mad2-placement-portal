@@ -128,15 +128,10 @@ class StudentpdApplyResource(Resource):
   @auth_required("token")
   @roles_required("student")
   def post(self, pd_id):
-    # pd_id = pd_parser.parse_args()["pd_id"]
-
     output = StudentService.apply_to_pdrive(current_user.u_id, pd_id)
     cache.delete("get_stud_pdlist")
     cache.delete("get_stud_apphistory")
     cache.delete_memoized(StudentpdResource.get, StudentpdResource, pd_id )
-
-    # if output == "Already applied...":
-    #   return {"message": "You have already applied "}, 400
     return {"message": "Submission Successful..."}, 201
   
 class StudentAppHistoryResource(Resource):
@@ -161,10 +156,7 @@ from tasks.test import csv_report
 import time
 
 class StudExportResource(Resource):
-  # @auth_required("token")
-  # @roles_required("student")
   def post(self,stud_id):
-    # stud_id = current_user.u_id
     result = csv_report.delay(stud_id)
     return {
       "task_id": result.id,
@@ -175,8 +167,6 @@ from celery.result import AsyncResult
 from flask import send_from_directory, redirect
 
 class StudExportStatusCheck(Resource):
-  # @auth_required("token")
-  # @roles_required("student") 
   def get(self, task_id):
     res = AsyncResult(task_id)
     if res.ready():
@@ -185,8 +175,6 @@ class StudExportStatusCheck(Resource):
       return {"status": "pending"}, 200
 
 class StudExportStatus(Resource):
-  # @auth_required("token")
-  # @roles_required("student") 
   def get(self, task_id):
     res = AsyncResult(task_id)
     while not res.ready():

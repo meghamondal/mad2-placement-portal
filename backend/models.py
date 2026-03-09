@@ -6,7 +6,6 @@ from flask_security.core import UserMixin, RoleMixin
 class User(db.Model, UserMixin):
   __tablename__="user"
   u_id=db.Column(db.Integer, primary_key=True)
-  # name=db.Column(db.String, nullable = False)
   email=db.Column(db.String, nullable= False, unique=True)
   password=db.Column(db.String, nullable=False, unique=True)
   fs_uniquifier = db.Column(db.String, unique = True, nullable = False)
